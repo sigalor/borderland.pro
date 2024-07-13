@@ -61,7 +61,7 @@ function mountFindCampButton() {
   input.onkeyup = (e) => {
     const value = e.target.value.toLowerCase();
     results.innerHTML = "";
-    if (value.length > 2) {
+    if (value.length >= 2) {
       const filteredCamps = camps
         .filter((camp) => camp.name.toLowerCase().includes(value))
         .sort((a, b) => a.name.localeCompare(b.name));
