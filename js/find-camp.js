@@ -54,7 +54,7 @@ function mountFindCampButton() {
   const container = document.getElementById("find-camp-container");
 
   const input = createComponentFromHTML(
-    `<input id="find-camp-input" class="button button-default" type="text" placeholder="Search for a camp..."/>`
+    `<input id="find-camp-input" class="button button-default" type="text" placeholder="🔍 Search for a camp..."/>`
   );
   const results = createComponentFromHTML(`<div id="find-camp-results"></div>`);
 
