@@ -9,6 +9,10 @@ async function fetchCamps() {
     .filter((e) => !e.isDeleted)
     .map((e) => {
       const geoJson = JSON.parse(e.geoJson);
+      if (!geoJson.properties.name) {
+        return;
+      }
+
       const minLon = Math.min(
         ...geoJson.geometry.coordinates[0].map((c) => c[0])
       );
@@ -34,6 +38,7 @@ async function fetchCamps() {
     })
     .filter(
       (e) =>
+        e &&
         e.name.length > 0 &&
         !["the void", "offlimit"].includes(e.name.toLowerCase())
     );
