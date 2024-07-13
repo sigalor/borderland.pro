@@ -1,0 +1,14 @@
+input.button {
+  border: 1px solid black;
+  width: 324px;
+  height: 46px;
+  background-color: #f8f8f8 !important;
+  color: black !important;
+
+  box-sizing: border-box;
+}
+
+/* only when it has children */
+#find-camp-results:not(:empty) {
+  margin-bottom: 1rem;
+}
