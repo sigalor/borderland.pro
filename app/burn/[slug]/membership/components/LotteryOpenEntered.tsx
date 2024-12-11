@@ -5,7 +5,7 @@ import { Button } from "@nextui-org/react";
 import { apiDelete } from "@/app/_components/api";
 import { useProject } from "@/app/_components/SessionContext";
 import toast from "react-hot-toast";
-import LotteryTicketDetails from "./LotteryTicketDetails";
+import MemberDetails from "./MemberDetails";
 
 export default function LotteryOpenEntered() {
   const { project, updateProjectSimple } = useProject();
@@ -13,7 +13,7 @@ export default function LotteryOpenEntered() {
 
   return (
     <div className="flex flex-col gap-4">
-      <LotteryTicketDetails />
+      <MemberDetails data={project?.lottery_ticket!} />
       <Button
         color="success"
         isLoading={isLoading}

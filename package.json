@@ -37,6 +37,7 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.5",
     "ajv": "^8.17.1",
+    "ajv-errors": "^3.0.0",
     "ajv-ts": "^0.9.0",
     "chokidar": "^4.0.1",
     "clsx": "^2.1.1",

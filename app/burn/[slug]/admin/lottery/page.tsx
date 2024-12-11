@@ -32,7 +32,7 @@ export default function LotteryTicketsPage() {
         { key: "last_name", label: "Last name" },
         {
           key: "birthdate",
-          label: "Birthdate",
+          label: "Date of birth",
           render: (bd) => bd,
         },
         { key: "is_low_income", label: "Is low income?" },

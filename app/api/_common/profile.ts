@@ -1,6 +1,6 @@
 import { SupabaseClient } from "@supabase/supabase-js";
 import { query } from "./endpoints";
-import { Profile } from "@/utils/types";
+import { Profile, Project } from "@/utils/types";
 
 export async function getProfile(
   supabase: SupabaseClient,
@@ -10,7 +10,7 @@ export async function getProfile(
     supabase
       .from("profiles")
       .select(
-        "*, role_assignments(roles(name, project_id)), burn_lottery_tickets(*)"
+        "*, role_assignments(roles(name, project_id)), burn_lottery_tickets(*), burn_memberships(*)"
       )
       .eq("id", userId)
       .single()
@@ -36,6 +36,21 @@ export async function getProfile(
     project.lottery_ticket = lt;
   }
   delete profile.burn_lottery_tickets;
+
+  for (const bm of profile.burn_memberships) {
+    const project: Project = projects.find((p: any) => p.id === bm.project_id);
+    project.membership = bm;
+
+    if (
+      !project.membership?.paid_at &&
+      (!project.membership?.reserved_until ||
+        +new Date(project.membership?.reserved_until) < +new Date())
+    ) {
+      // if the membership hasn't been paid yet and it hasn't been reserved or the reservation is expired, it doesn't actually belong to the user
+      delete project.membership;
+    }
+  }
+  delete profile.burn_memberships;
 
   return { ...profile, projects };
 }

@@ -7,15 +7,17 @@ import { BurnStage } from "@/utils/types";
 import LotteryOpenNotEntered from "./components/LotteryOpenNotEntered";
 import LotteryOpenEntered from "./components/LotteryOpenEntered";
 import LotteryClosedNotEntered from "./components/LotteryClosedNotEntered";
-import LotteryClosedWinner from "./components/LotteryClosedWinner";
+import MembershipAvailable from "./components/MembershipAvailable";
 import LotteryClosedNotWinner from "./components/LotteryClosedNotWinner";
+import Member from "./components/Member";
 
 export enum MembershipStatus {
   LotteryOpenNotEntered,
   LotteryOpenEntered,
   LotteryClosedNotEntered,
-  LotteryClosedWinner,
   LotteryClosedNotWinner,
+  MembershipAvailable,
+  Member,
   Invalid,
 }
 
@@ -27,6 +29,14 @@ export default function MembershipPage() {
     const hasEntered = !!project?.lottery_ticket;
     const hasWon = !!project?.lottery_ticket?.is_winner;
 
+    if (project?.membership) {
+      if (project?.membership?.paid_at) {
+        return MembershipStatus.Member;
+      } else {
+        return MembershipStatus.MembershipAvailable;
+      }
+    }
+
     if (stage === BurnStage.LotteryOpen) {
       if (hasEntered) {
         return MembershipStatus.LotteryOpenEntered;
@@ -35,31 +45,32 @@ export default function MembershipPage() {
       }
     } else if (stage === BurnStage.LotteryClosed) {
       if (hasEntered) {
-        if (hasWon) {
-          return MembershipStatus.LotteryClosedWinner;
-        } else {
+        if (!hasWon) {
           return MembershipStatus.LotteryClosedNotWinner;
         }
       } else {
         return MembershipStatus.LotteryClosedNotEntered;
       }
     }
-
     return MembershipStatus.Invalid;
   };
 
+  const membershipStatus = getMembershipStatus();
+
   const renderContent = () => {
-    switch (getMembershipStatus()) {
+    switch (membershipStatus) {
       case MembershipStatus.LotteryOpenNotEntered:
         return <LotteryOpenNotEntered />;
       case MembershipStatus.LotteryOpenEntered:
         return <LotteryOpenEntered />;
       case MembershipStatus.LotteryClosedNotEntered:
         return <LotteryClosedNotEntered />;
-      case MembershipStatus.LotteryClosedWinner:
-        return <LotteryClosedWinner />;
       case MembershipStatus.LotteryClosedNotWinner:
         return <LotteryClosedNotWinner />;
+      case MembershipStatus.MembershipAvailable:
+        return <MembershipAvailable />;
+      case MembershipStatus.Member:
+        return <Member />;
       case MembershipStatus.Invalid:
         return <div>Invalid membership status</div>;
     }
@@ -67,7 +78,12 @@ export default function MembershipPage() {
 
   return (
     <div>
-      <Heading>Membership lottery</Heading>
+      <Heading>
+        {membershipStatus === MembershipStatus.Member ||
+        membershipStatus === MembershipStatus.MembershipAvailable
+          ? "Your membership"
+          : "Membership lottery"}
+      </Heading>
       {renderContent()}
     </div>
   );

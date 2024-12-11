@@ -55,9 +55,6 @@ create table burn_config (
   share_memberships_low_income integer, -- the percentage of memberships that will be reserved for low-income individuals (tier 1)
   stripe_secret_api_key text,
   stripe_webhook_secret text,
-  stripe_membership_price_tier_1_price_id text,
-  stripe_membership_price_tier_2_price_id text,
-  stripe_membership_price_tier_3_price_id text,
   check (membership_price_currency ~ '^[A-Z]{3}$')
 );
 
@@ -81,17 +78,19 @@ create table burn_memberships (
   id uuid primary key default gen_random_uuid(),
   created_at timestamp with time zone default now(),
   project_id uuid references projects not null,
-  owner_id uuid references profiles not null,
+  owner_id uuid references profiles not null, -- irrelevant if reserved_until is not null AND reserved_until is in the past (but even when reserved_until is in the past, the owner_id is still kept, for the case that the user clicks the 'Purchase membership' before the reserved_until timestamp, but the payment is completed after it. 'Officially' the user is then not owner of the membership anymore, but in case it hasn't been taken by anyone else in the meantime, the user can still claim it)
+  from_lottery_ticket_id uuid references burn_lottery_tickets,
   first_name text not null,
   last_name text not null,
   birthdate text not null,
   reserved_until timestamp with time zone,
-  reserved_by uuid references profiles, -- irrelevant if reserved_until is null or in the past
   price float,
+  price_currency text,
   paid_at timestamp with time zone, -- only actually valid when this is set
   checked_in_at timestamp with time zone, -- this is set when the user checks in at the event
   unique (project_id, first_name, last_name, birthdate),
-  check (birthdate ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+  check (birthdate ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'),
+  check (price_currency ~ '^[A-Z]{3}$')
 );
 
 -- This trigger automatically creates a profile entry when a new user signs up via Supabase Auth.

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Heading from "@/app/_components/Heading";
 import { Button, Input } from "@nextui-org/react";
 import { useProject } from "@/app/_components/SessionContext";
-import { BurnStage } from "@/utils/types";
+import { BurnStage, BurnMembershipPricing } from "@/utils/types";
 import toast from "react-hot-toast";
 
 export default function ConfigPage() {
@@ -54,24 +54,6 @@ export default function ConfigPage() {
   const [stripeWebhookSecret, setStripeWebhookSecret] = useState(
     project!.burn_config.stripe_webhook_secret ?? ""
   );
-  const [
-    stripeMembershipPriceTier1PriceId,
-    setStripeMembershipPriceTier1PriceId,
-  ] = useState(
-    project!.burn_config.stripe_membership_price_tier_1_price_id ?? ""
-  );
-  const [
-    stripeMembershipPriceTier2PriceId,
-    setStripeMembershipPriceTier2PriceId,
-  ] = useState(
-    project!.burn_config.stripe_membership_price_tier_2_price_id ?? ""
-  );
-  const [
-    stripeMembershipPriceTier3PriceId,
-    setStripeMembershipPriceTier3PriceId,
-  ] = useState(
-    project!.burn_config.stripe_membership_price_tier_3_price_id ?? ""
-  );
 
   const isISODate = (date: string | null) => date && !isNaN(Date.parse(date));
   const isNumber = (value: string) => !isNaN(parseInt(value));
@@ -110,12 +92,6 @@ export default function ConfigPage() {
       share_memberships_low_income: parseInt(shareMembershipsLowIncome),
       stripe_secret_api_key: stripeSecretApiKey,
       stripe_webhook_secret: stripeWebhookSecret,
-      stripe_membership_price_tier_1_price_id:
-        stripeMembershipPriceTier1PriceId,
-      stripe_membership_price_tier_2_price_id:
-        stripeMembershipPriceTier2PriceId,
-      stripe_membership_price_tier_3_price_id:
-        stripeMembershipPriceTier3PriceId,
     };
     try {
       await updateBurnConfig(newConfig);
@@ -162,7 +138,9 @@ export default function ConfigPage() {
         <Input
           label="membership_pricing_type"
           value={membershipPricingType}
-          onValueChange={setMembershipPricingType}
+          onValueChange={(x) =>
+            setMembershipPricingType(x as BurnMembershipPricing)
+          }
         />
         <Input
           label="membership_price_tier_1"
@@ -198,21 +176,6 @@ export default function ConfigPage() {
           label="stripe_webhook_secret"
           value={stripeWebhookSecret}
           onValueChange={setStripeWebhookSecret}
-        />
-        <Input
-          label="stripe_membership_price_tier_1_price_id"
-          value={stripeMembershipPriceTier1PriceId}
-          onValueChange={setStripeMembershipPriceTier1PriceId}
-        />
-        <Input
-          label="stripe_membership_price_tier_2_price_id"
-          value={stripeMembershipPriceTier2PriceId}
-          onValueChange={setStripeMembershipPriceTier2PriceId}
-        />
-        <Input
-          label="stripe_membership_price_tier_3_price_id"
-          value={stripeMembershipPriceTier3PriceId}
-          onValueChange={setStripeMembershipPriceTier3PriceId}
         />
         <Button
           color={"primary"}

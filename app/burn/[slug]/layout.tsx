@@ -41,7 +41,9 @@ export default function ProjectLayout({
             icon: <RocketOutlined />,
           },
           {
-            label: "Membership lottery",
+            label: project.membership?.paid_at
+              ? "Your membership"
+              : "Membership lottery",
             path: `/burn/${project?.slug}/membership`,
             icon: <IdcardOutlined />,
           },

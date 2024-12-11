@@ -4,14 +4,9 @@ import { BurnRole } from "@/utils/types";
 export const GET = requestWithProject(
   async (supabase, profile, request, body, project) => {
     return {
-      data: await query(() =>
-        supabase
-          .from("burn_memberships")
-          .select("*, profiles(email)")
-          .eq("project_id", project!.id)
-      ),
+      hasMembership: project?.membership?.paid_at !== null,
     };
   },
   undefined,
-  BurnRole.Admin
+  BurnRole.Participant
 );

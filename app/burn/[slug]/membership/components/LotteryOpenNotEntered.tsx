@@ -34,7 +34,7 @@ export default function LotteryOpenNotEntered() {
         />
         <Input label="Last name" value={lastName} onValueChange={setLastName} />
         <Input
-          label="Birthdate (YYYY-MM-DD)"
+          label="Date of birth (YYYY-MM-DD)"
           value={birthdate}
           onValueChange={setBirthdate}
         />

@@ -17,9 +17,6 @@ const UpdateBurnConfigRequestSchema = s.object({
   share_memberships_low_income: s.number(),
   stripe_secret_api_key: s.string(),
   stripe_webhook_secret: s.string(),
-  stripe_membership_price_tier_1_price_id: s.string(),
-  stripe_membership_price_tier_2_price_id: s.string(),
-  stripe_membership_price_tier_3_price_id: s.string(),
 });
 
 export const PATCH = requestWithProject<

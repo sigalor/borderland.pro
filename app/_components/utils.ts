@@ -13,3 +13,11 @@ export function calculateAge(birthday: string) {
 
   return age;
 }
+
+export function formatMoney(amount: number, currency: string) {
+  const formatter = new Intl.NumberFormat(undefined, {
+    style: "currency",
+    currency,
+  });
+  return formatter.format(amount);
+}
