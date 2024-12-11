@@ -35,24 +35,30 @@ create table role_assignments (
 
 create type burn_stage as enum ('lottery-open', 'lottery-closed', 'open-sale');
 
+create type burn_membership_pricing_type as enum ('tiered-3');
+
 create table burn_config (
   id uuid primary key default gen_random_uuid(),
   created_at timestamp with time zone default now(),
   project_id uuid references projects not null,
-  current_stage burn_stage,
+  current_stage burn_stage not null,
   open_sale_starting_at timestamp with time zone, -- this determines the 'reserved_until' field for memberships obtained in the lottery
   open_sale_reservation_duration bigint, -- in seconds, determines how long the user has time to answer the questions and enter payment details
   transfer_reservation_duration bigint, -- in seconds, determines how long the user has time to purchase a membership after a transfer is made
-  max_memberships bigint -- the maximum number of memberships that can be sold in the open sale
-);
-
-create table burn_membership_prices (
-  id uuid primary key default gen_random_uuid(),
-  created_at timestamp with time zone default now(),
-  project_id uuid references projects not null,
-  description text not null,
-  price float not null,
-  currency text not null
+  max_memberships bigint, -- the maximum number of memberships that can be sold in the open sale
+  membership_price_currency text not null,
+  membership_pricing_type burn_membership_pricing_type not null,
+  membership_price_tier_1 float,
+  membership_price_tier_2 float,
+  membership_price_tier_3 float,
+  share_memberships_lottery integer, -- the percentage of memberships that will be reserved for lottery winners (i.e. when the lottery is drawn, max_memberships*share_memberships_lottery/100 will be chosen, max_memberships*share_memberships_low_income/100 of which are low-income)
+  share_memberships_low_income integer, -- the percentage of memberships that will be reserved for low-income individuals (tier 1)
+  stripe_secret_api_key text,
+  stripe_webhook_secret text,
+  stripe_membership_price_tier_1_price_id text,
+  stripe_membership_price_tier_2_price_id text,
+  stripe_membership_price_tier_3_price_id text,
+  check (membership_price_currency ~ '^[A-Z]{3}$')
 );
 
 create table burn_lottery_tickets (
@@ -63,6 +69,7 @@ create table burn_lottery_tickets (
   first_name text not null,
   last_name text not null,
   birthdate text not null,
+  is_low_income boolean default false,
   is_winner boolean default false,
   can_invite_plus_one boolean default false,
   added_to_waitlist_at timestamp with time zone, -- only relevant when no memberships are available in the open sale anymore, needed to determine the order of the waitlist; waiting list and open sale are identical
@@ -81,7 +88,7 @@ create table burn_memberships (
   reserved_until timestamp with time zone,
   reserved_by uuid references profiles, -- irrelevant if reserved_until is null or in the past
   price float,
-  paid_at timestamp with time zone,
+  paid_at timestamp with time zone, -- only actually valid when this is set
   checked_in_at timestamp with time zone, -- this is set when the user checks in at the event
   unique (project_id, first_name, last_name, birthdate),
   check (birthdate ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$')

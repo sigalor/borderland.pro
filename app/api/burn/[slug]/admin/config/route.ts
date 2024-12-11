@@ -4,10 +4,22 @@ import { BurnRole } from "@/utils/types";
 
 const UpdateBurnConfigRequestSchema = s.object({
   current_stage: s.string(),
-  max_memberships: s.number(),
   open_sale_starting_at: s.string(),
   open_sale_reservation_duration: s.number(),
   transfer_reservation_duration: s.number(),
+  max_memberships: s.number(),
+  membership_price_currency: s.string(),
+  membership_pricing_type: s.string(),
+  membership_price_tier_1: s.number(),
+  membership_price_tier_2: s.number(),
+  membership_price_tier_3: s.number(),
+  share_memberships_lottery: s.number(),
+  share_memberships_low_income: s.number(),
+  stripe_secret_api_key: s.string(),
+  stripe_webhook_secret: s.string(),
+  stripe_membership_price_tier_1_price_id: s.string(),
+  stripe_membership_price_tier_2_price_id: s.string(),
+  stripe_membership_price_tier_3_price_id: s.string(),
 });
 
 export const PATCH = requestWithProject<

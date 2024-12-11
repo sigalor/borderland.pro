@@ -12,6 +12,7 @@ export type ActionButtonOnClickHandler<T> = (
 export type ActionButtonDef<T = undefined> = {
   key: string;
   label: string;
+  condition?: (data?: T) => boolean;
   onClick:
     | ActionButtonOnClickHandler<T>
     | {
@@ -31,11 +32,16 @@ export default function ActionButton<T>({
 }) {
   const [loading, setLoading] = useState(false);
 
+  const condition = action.condition ? action.condition(data) : true;
+  if (!condition) {
+    return null;
+  }
+
   return (
     <Button
       key={action.label}
       isLoading={loading}
-      onClick={async () => {
+      onPress={async () => {
         try {
           const handler =
             typeof action.onClick === "function"

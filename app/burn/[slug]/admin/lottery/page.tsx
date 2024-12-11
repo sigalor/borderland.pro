@@ -3,62 +3,20 @@
 import React from "react";
 import DataTable from "@/app/_components/admin/DataTable";
 import { useProject } from "@/app/_components/SessionContext";
-import { usePrompt } from "@/app/_components/PromptContext";
 import { BurnStage } from "@/utils/types";
-import { ActionButtonDef } from "@/app/_components/ActionButton";
-import { FullData } from "@/app/_components/admin/DataTable";
-import { apiPost } from "@/app/_components/api";
+import { apiPost, apiDelete } from "@/app/_components/api";
 import toast from "react-hot-toast";
+import { BurnLotteryTicket } from "@/utils/types";
+import { DataItem, FullData } from "@/app/_components/admin/DataTable";
 
 export default function LotteryTicketsPage() {
   const { project, updateBurnConfig, reloadProfile } = useProject();
-  const prompt = usePrompt();
 
-  const actions: ActionButtonDef<FullData>[] = [];
-  if (project?.burn_config.current_stage === BurnStage.LotteryOpen) {
-    actions.push({
-      key: "close-lottery",
-      label: "Close lottery",
-      onClick: () =>
-        updateBurnConfig({
-          current_stage: BurnStage.LotteryClosed,
-        }),
-    });
-  } else if (project?.burn_config.current_stage === BurnStage.LotteryClosed) {
-    actions.push({
-      key: "reopen-lottery",
-      label: "Reopen lottery",
-      onClick: () => updateBurnConfig({ current_stage: BurnStage.LotteryOpen }),
-    });
-    actions.push({
-      key: "draw-winners",
-      label: "Draw winners",
-      onClick: {
-        prompt: () =>
-          prompt(
-            "How many winners do you want to draw? Note that you cannot reopen the lottery after winners have been drawn.",
-            [
-              {
-                key: "count",
-                label: "Count",
-                validate: (value) =>
-                  !isNaN(parseInt(value)) && parseInt(value) > 0,
-                transform: (value) => parseInt(value),
-              },
-            ]
-          ),
-        handler: async (_, data) => {
-          await apiPost(
-            `/burn/${project?.slug}/admin/draw-lottery-winners`,
-            data
-          );
-          await reloadProfile();
-          toast.success(`${data!.count} winners drawn!`);
-          return true;
-        },
-      },
-    });
-  }
+  const stage = project?.burn_config.current_stage;
+  const hasWinners = (data?: FullData) =>
+    (data ?? { data: [] }).data.some(
+      (item: DataItem) => (item as BurnLotteryTicket).is_winner
+    );
 
   return (
     <DataTable
@@ -77,10 +35,55 @@ export default function LotteryTicketsPage() {
           label: "Birthdate",
           render: (bd) => bd,
         },
+        { key: "is_low_income", label: "Is low income?" },
         { key: "is_winner", label: "Is winner?" },
         { key: "can_invite_plus_one", label: "Can invite +1?" },
       ]}
-      globalActions={actions}
+      globalActions={[
+        {
+          key: "close-lottery",
+          label: "Close lottery",
+          condition: () => stage === BurnStage.LotteryOpen,
+          onClick: () =>
+            updateBurnConfig({
+              current_stage: BurnStage.LotteryClosed,
+            }),
+        },
+        {
+          key: "reopen-lottery",
+          label: "Reopen lottery",
+          condition: (data) =>
+            stage === BurnStage.LotteryClosed && !hasWinners(data),
+          onClick: () =>
+            updateBurnConfig({ current_stage: BurnStage.LotteryOpen }),
+        },
+        {
+          key: "draw-winners",
+          label: "Draw winners",
+          condition: (data) =>
+            stage === BurnStage.LotteryClosed && !hasWinners(data),
+          onClick: async () => {
+            const { numDrawn } = await apiPost(
+              `/burn/${project?.slug}/admin/lottery-winners`
+            );
+            await reloadProfile();
+            toast.success(`${numDrawn} winners were drawn!`);
+            return true;
+          },
+        },
+        {
+          key: "reset-winners",
+          label: "Reset winners",
+          condition: (data) =>
+            stage === BurnStage.LotteryClosed && hasWinners(data),
+          onClick: async () => {
+            await apiDelete(`/burn/${project?.slug}/admin/lottery-winners`);
+            await reloadProfile();
+            toast.success("Winners were reset!");
+            return true;
+          },
+        },
+      ]}
     />
   );
 }

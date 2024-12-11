@@ -7,6 +7,7 @@ const EnterLotteryRequestSchema = s.object({
   first_name: s.string(),
   last_name: s.string(),
   birthdate: s.string().pattern(/^\d{4}-\d{2}-\d{2}$/),
+  is_low_income: s.boolean(),
 });
 
 export const POST = requestWithProject<

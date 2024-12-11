@@ -11,10 +11,22 @@ export enum BurnRole {
 
 export type BurnConfig = {
   current_stage: BurnStage;
-  max_memberships: number;
   open_sale_starting_at: string;
   open_sale_reservation_duration: number;
   transfer_reservation_duration: number;
+  max_memberships: number;
+  membership_price_currency: string;
+  membership_pricing_type: string;
+  membership_price_tier_1: number;
+  membership_price_tier_2: number;
+  membership_price_tier_3: number;
+  share_memberships_lottery: number;
+  share_memberships_low_income: number;
+  stripe_secret_api_key: string;
+  stripe_webhook_secret: string;
+  stripe_membership_price_tier_1_price_id: string;
+  stripe_membership_price_tier_2_price_id: string;
+  stripe_membership_price_tier_3_price_id: string;
 };
 
 export type BurnLotteryTicket = {
@@ -22,6 +34,7 @@ export type BurnLotteryTicket = {
   first_name: string;
   last_name: string;
   birthdate: string;
+  is_low_income: boolean;
   is_winner: boolean;
   can_invite_plus_one: boolean;
   added_to_waitlist_at: string;

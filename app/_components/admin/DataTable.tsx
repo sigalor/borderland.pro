@@ -7,7 +7,7 @@ import BasicTable from "@/app/_components/BasicTable";
 import Heading from "@/app/_components/Heading";
 import ActionButton, { ActionButtonDef } from "../ActionButton";
 
-type DataItem = {
+export type DataItem = {
   id: string;
   [key: string]: any;
 };
@@ -62,12 +62,12 @@ export default function DataTable({
         <Button
           color="primary"
           aria-label={`Reload ${endpoint}`}
-          onClick={loadData}
+          onPress={loadData}
           isLoading={loading}
         >
           {!loading && "Reload"}
         </Button>
-        {globalActions && (
+        {globalActions && !loading ? (
           <>
             {globalActions.map((action) => (
               <ActionButton
@@ -78,7 +78,7 @@ export default function DataTable({
               />
             ))}
           </>
-        )}
+        ) : null}
       </div>
       {fullData && !loading ? (
         <BasicTable

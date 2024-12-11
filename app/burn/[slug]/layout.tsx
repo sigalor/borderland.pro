@@ -13,6 +13,7 @@ import {
 } from "@ant-design/icons";
 import { useProject } from "@/app/_components/SessionContext";
 import { redirect } from "next/navigation";
+import { BurnRole } from "@/utils/types";
 
 export default function ProjectLayout({
   children,
@@ -51,14 +52,9 @@ export default function ProjectLayout({
             path: `/burn/${project?.slug}/scanner`,
             icon: <QrcodeOutlined />,
           },
-          ...(project.roles.includes("admin")
+          ...(project.roles.includes(BurnRole.Admin)
             ? ([
                 { separator: true },
-                {
-                  label: "Configuration",
-                  path: `/burn/${project?.slug}/admin/config`,
-                  icon: <SettingOutlined />,
-                },
                 {
                   label: "All members",
                   path: `/burn/${project?.slug}/admin/members`,
@@ -69,12 +65,17 @@ export default function ProjectLayout({
                   path: `/burn/${project?.slug}/admin/lottery`,
                   icon: <WalletOutlined />,
                 },
+                {
+                  label: "Configuration",
+                  path: `/burn/${project?.slug}/admin/config`,
+                  icon: <SettingOutlined />,
+                },
               ] as any)
             : []),
           ,
         ]}
       />
-      <div className="flex-1 p-16 pl-96">{children}</div>
+      <div className="flex-1 p-16 pl-96 h-full">{children}</div>
     </div>
   );
 }

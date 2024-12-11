@@ -28,7 +28,14 @@ export const POST = requestWithAuthAdmin<
       open_sale_starting_at: new Date().toISOString(),
       open_sale_reservation_duration: 60 * 15,
       transfer_reservation_duration: 60 * 60 * 24 * 3,
-      max_memberships: 100,
+      max_memberships: 4603,
+      membership_price_currency: "SEK",
+      membership_pricing_type: "tiered-3",
+      membership_price_tier_1: 1180,
+      membership_price_tier_2: 2020,
+      membership_price_tier_3: 2800,
+      share_memberships_lottery: 50,
+      share_memberships_low_income: 10,
     })
   );
 
