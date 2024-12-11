@@ -58,14 +58,14 @@ export default function ProjectLayout({
             ? ([
                 { separator: true },
                 {
-                  label: "All members",
-                  path: `/burn/${project?.slug}/admin/members`,
-                  icon: <TeamOutlined />,
+                  label: "Lottery tickets",
+                  path: `/burn/${project?.slug}/admin/lottery-tickets`,
+                  icon: <WalletOutlined />,
                 },
                 {
-                  label: "Lottery",
-                  path: `/burn/${project?.slug}/admin/lottery`,
-                  icon: <WalletOutlined />,
+                  label: "Memberships",
+                  path: `/burn/${project?.slug}/admin/memberships`,
+                  icon: <TeamOutlined />,
                 },
                 {
                   label: "Configuration",

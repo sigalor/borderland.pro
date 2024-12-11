@@ -9,7 +9,7 @@ export default function MembersPage() {
   const { project } = useProject();
   return (
     <DataTable
-      title="Members"
+      title="Memberships"
       endpoint={`/burn/${project?.slug}/admin/members`}
       columns={[
         {
