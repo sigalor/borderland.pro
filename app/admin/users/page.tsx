@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import DataTable from "@/app/_components/admin/DataTable";
+import DataTable from "@/app/_components/DataTable";
 
 export default function UsersPage() {
   return (

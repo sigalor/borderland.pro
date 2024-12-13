@@ -6,7 +6,7 @@ import Stripe from "stripe";
 import { stripeCurrenciesWithoutDecimals } from "@/app/api/_common/stripe";
 
 const PurchaseMembershipRequestSchema = s.object({
-  origin: s.string(),
+  originUrl: s.string(),
   tier: s.number(),
 });
 
@@ -14,6 +14,10 @@ export const POST = requestWithProject<
   s.infer<typeof PurchaseMembershipRequestSchema>
 >(
   async (supabase, profile, request, body, project) => {
+    if (body.tier !== 1 && body.tier !== 2 && body.tier !== 3) {
+      return NextResponse.json({ error: "Invalid tier" }, { status: 400 });
+    }
+
     if (!project?.burn_config.stripe_secret_api_key) {
       return NextResponse.json(
         { error: "No Stripe API key configured" },
@@ -21,27 +25,34 @@ export const POST = requestWithProject<
       );
     }
 
-    if (!project?.membership) {
+    if (project?.membership) {
       return NextResponse.json(
-        { error: "User has no membership" },
+        { error: "User already has a membership" },
         { status: 400 }
       );
     }
 
-    if (project?.membership?.paid_at) {
+    if (!project?.membership_purchase_right) {
       return NextResponse.json(
-        { error: "Membership already purchased" },
+        { error: "User has no membership purchase right" },
         { status: 400 }
       );
     }
 
-    if (body.tier !== 1 && body.tier !== 2 && body.tier !== 3) {
-      return NextResponse.json({ error: "Invalid tier" }, { status: 400 });
-    }
-
-    if (body.tier === 1 && !project?.lottery_ticket?.is_low_income) {
+    if (body.tier === 1 && !project?.membership_purchase_right?.is_low_income) {
       return NextResponse.json(
         { error: "Not eligible for low income tier" },
+        { status: 400 }
+      );
+    }
+
+    if (
+      !project.membership_purchase_right.first_name ||
+      !project.membership_purchase_right.last_name ||
+      !project.membership_purchase_right.birthdate
+    ) {
+      return NextResponse.json(
+        { error: "Membership purchase right is incomplete" },
         { status: 400 }
       );
     }
@@ -77,19 +88,15 @@ export const POST = requestWithProject<
         },
       ],
       mode: "payment",
-      success_url: body.origin + "?success=true",
-      cancel_url: body.origin,
+      success_url: body.originUrl + "?success=true",
+      cancel_url: body.originUrl,
       metadata: {
-        owner_id: profile.id,
-        membership_id: project.membership.id,
+        membership_purchase_right_id: project.membership_purchase_right.id,
       },
     });
 
     if (!project.burn_config.stripe_webhook_secret) {
-      const originUrl = new URL(body.origin);
-      const isLocal =
-        originUrl.hostname === "localhost" ||
-        originUrl.hostname === "127.0.0.1";
+      const originUrl = new URL(body.originUrl);
       const whEndpoint = await stripe.webhookEndpoints.create({
         url: originUrl.origin + "/api/webhooks/stripe",
         enabled_events: ["checkout.session.completed"],

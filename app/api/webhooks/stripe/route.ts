@@ -15,7 +15,7 @@ export async function POST(req: Request) {
   const body = await req.text();
   const sig = req.headers.get("stripe-signature") as string;
 
-  // TODO: use webhook endpoint metadata instead to determine which project to use
+  // TODO: use webhook endpoint metadata instead of trial-and-error to determine which project to use
   const suitableProjects = allProjects.filter((project: any) => {
     const burnConfig: BurnConfig = project.burn_config[0];
     if (burnConfig.stripe_secret_api_key && burnConfig.stripe_webhook_secret) {
@@ -46,56 +46,64 @@ export async function POST(req: Request) {
       { status: 400 }
     );
   }
+  const projectId = suitableProjects[0].id;
 
   try {
     if (event!.type === "checkout.session.completed") {
-      const membershipId = event.data.object.metadata?.membership_id;
-      if (!membershipId) {
+      const membershipPurchaseRightId =
+        event.data.object.metadata?.membership_purchase_right_id;
+      if (!membershipPurchaseRightId) {
         return NextResponse.json(
-          { error: "No membership ID found in session metadata" },
+          {
+            error: "No membership purchase right ID found in session metadata",
+          },
           { status: 400 }
         );
       }
 
-      // make sure the membership exists
-      const membership = await query(() =>
+      // make sure the membership purchase right exists and is not expired
+      const membershipPurchaseRight = await query(() =>
         supabase
-          .from("burn_memberships")
+          .from("burn_membership_purchase_rights")
           .select("*")
-          .eq("id", membershipId)
-          .eq("project_id", suitableProjects[0].id)
+          .eq("id", membershipPurchaseRightId)
+          .eq("project_id", projectId)
+          .gt("expires_at", new Date().toISOString())
           .single()
       );
-      if (membership.owner_id !== event.data.object.metadata?.owner_id) {
-        console.warn(
-          "Wrong owner ID, even though purchase was successful (expected: " +
-            membership.owner_id +
-            ", got: " +
-            event.data.object.metadata?.owner_id +
-            ")"
-        );
-        return NextResponse.json({ error: "Wrong owner ID" }, { status: 400 });
-      }
+
+      // mark the membership purchase right as expired
+      await query(() =>
+        supabase
+          .from("burn_membership_purchase_rights")
+          .update({
+            expires_at: new Date().toISOString(),
+          })
+          .eq("id", membershipPurchaseRightId)
+      );
 
       const session = event.data.object;
       await query(() =>
-        supabase
-          .from("burn_memberships")
-          .update({
-            price: stripeCurrenciesWithoutDecimals.includes(
-              session.currency!.toUpperCase()
-            )
-              ? session.amount_total
-              : session.amount_total! / 100,
-            price_currency: session.currency!.toUpperCase(),
-            paid_at: new Date().toISOString(),
-          })
-          .eq("id", membershipId)
+        supabase.from("burn_memberships").insert({
+          project_id: projectId,
+          owner_id: membershipPurchaseRight.owner_id,
+          first_name: membershipPurchaseRight.first_name,
+          last_name: membershipPurchaseRight.last_name,
+          birthdate: membershipPurchaseRight.birthdate,
+          stripe_payment_intent_id: session.payment_intent!,
+          price: stripeCurrenciesWithoutDecimals.includes(
+            session.currency!.toUpperCase()
+          )
+            ? session.amount_total
+            : session.amount_total! / 100,
+          price_currency: session.currency!.toUpperCase(),
+        })
       );
 
       return NextResponse.json({ received: true }, { status: 200 });
     }
   } catch (e) {
+    console.error(e);
     return NextResponse.json(
       { error: "Webhook handler failed. View your Next.js function logs." },
       { status: 400 }

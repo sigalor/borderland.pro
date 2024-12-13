@@ -90,7 +90,7 @@ export default function Auth() {
                 color="primary"
                 isDisabled={!canVerifyOtp}
                 isLoading={otpLoading}
-                onClick={handleVerifyOtp}
+                onPress={handleVerifyOtp}
                 size="lg"
                 className="w-full font-medium"
               >
@@ -133,7 +133,7 @@ export default function Auth() {
             color="primary"
             isDisabled={!canSendMagicLink}
             isLoading={emailLoading}
-            onClick={handleLogin}
+            onPress={handleLogin}
             size="lg"
             className="w-full font-medium"
           >

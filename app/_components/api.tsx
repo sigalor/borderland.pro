@@ -38,7 +38,7 @@ export async function apiFetch(endpoint: string, options: any = {}) {
       ? json.error
       : `HTTP error! status: ${response.status} (${text})`;
     if (!options.hideToast) {
-      toast.error(message);
+      toast.error(message.slice(0, 200));
     }
 
     throw new ApiError(message, response.status);

@@ -10,6 +10,7 @@ import {
   QrcodeOutlined,
   TeamOutlined,
   WalletOutlined,
+  FileDoneOutlined,
 } from "@ant-design/icons";
 import { useProject } from "@/app/_components/SessionContext";
 import { redirect } from "next/navigation";
@@ -41,9 +42,10 @@ export default function ProjectLayout({
             icon: <RocketOutlined />,
           },
           {
-            label: project.membership?.paid_at
-              ? "Your membership"
-              : "Membership lottery",
+            label:
+              project.membership || project.membership_purchase_right
+                ? "Your membership"
+                : "Membership lottery",
             path: `/burn/${project?.slug}/membership`,
             icon: <IdcardOutlined />,
           },
@@ -61,6 +63,11 @@ export default function ProjectLayout({
                   label: "Lottery tickets",
                   path: `/burn/${project?.slug}/admin/lottery-tickets`,
                   icon: <WalletOutlined />,
+                },
+                {
+                  label: "Membership purchase rights",
+                  path: `/burn/${project?.slug}/admin/membership-purchase-rights`,
+                  icon: <FileDoneOutlined />,
                 },
                 {
                   label: "Memberships",

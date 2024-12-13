@@ -24,7 +24,7 @@ export default function Home() {
       />
       <h1 className="text-4xl font-bold mt-4">borderland.pro</h1>
       <h2 className="text-2xl mt-2 mb-4">Membership platform</h2>
-      <Button color="primary" onClick={() => setIsOpen(true)}>
+      <Button color="primary" onPress={() => setIsOpen(true)}>
         Click to login
       </Button>
       <Modal

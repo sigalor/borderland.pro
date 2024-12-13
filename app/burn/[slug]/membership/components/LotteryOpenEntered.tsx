@@ -20,7 +20,7 @@ export default function LotteryOpenEntered() {
         onPress={async () => {
           setIsLoading(true);
           try {
-            await apiDelete(`/burn/${project?.slug}/lottery`);
+            await apiDelete(`/burn/${project?.slug}/lottery-ticket`);
             updateProjectSimple({
               lottery_ticket: undefined,
             });

@@ -5,7 +5,9 @@ import { Button } from "@nextui-org/react";
 import { apiGet } from "@/app/_components/api";
 import BasicTable from "@/app/_components/BasicTable";
 import Heading from "@/app/_components/Heading";
-import ActionButton, { ActionButtonDef } from "../ActionButton";
+import ActionButton, { ActionButtonDef } from "./ActionButton";
+import { DeleteOutlined } from "@ant-design/icons";
+import { apiDelete } from "@/app/_components/api";
 
 export type DataItem = {
   id: string;
@@ -26,6 +28,10 @@ interface DataTableProps {
   }>;
   title: string;
   globalActions?: ActionButtonDef<FullData>[];
+  rowActions?: ActionButtonDef<DataItem>[];
+  rowActionsCrud?: {
+    delete?: boolean;
+  };
 }
 
 export default function DataTable({
@@ -33,6 +39,8 @@ export default function DataTable({
   columns,
   title,
   globalActions,
+  rowActions,
+  rowActionsCrud,
 }: DataTableProps) {
   const initialLoadDone = useRef(false);
   const [fullData, setFullData] = useState<FullData | undefined>(undefined);
@@ -55,6 +63,20 @@ export default function DataTable({
     }
   }, [endpoint]);
 
+  const rowActionsFull: ActionButtonDef<DataItem>[] = rowActions ?? [];
+  if (rowActionsCrud?.delete) {
+    rowActionsFull.push({
+      key: "delete",
+      tooltip: "Delete",
+      icon: <DeleteOutlined />,
+      onClick: async (data) => {
+        await apiDelete(endpoint + "/" + data!.id);
+        return true;
+      },
+      successCallback: loadData,
+    });
+  }
+
   return (
     <div>
       <Heading>{title}</Heading>
@@ -72,9 +94,8 @@ export default function DataTable({
             {globalActions.map((action) => (
               <ActionButton
                 key={action.key}
-                action={action}
+                action={{ ...action, successCallback: loadData }}
                 data={fullData!}
-                successCallback={loadData}
               />
             ))}
           </>
@@ -87,6 +108,7 @@ export default function DataTable({
           columns={columns}
           rowsPerPage={10}
           ariaLabel={`${title} table`}
+          rowActions={rowActionsFull}
         />
       ) : null}
     </div>

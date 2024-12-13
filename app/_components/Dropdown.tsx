@@ -11,15 +11,19 @@ export default function Dropdown({
   options,
   value,
   onChange,
+  isDisabled,
 }: {
   options: { id: string; label: string }[];
   value: string;
   onChange: (value: string) => void;
+  isDisabled?: boolean;
 }) {
   return (
     <NextUIDropdown>
       <DropdownTrigger>
-        <Button>{options.find((o) => o.id === value)?.label}</Button>
+        <Button isDisabled={isDisabled}>
+          {options.find((o) => o.id === value)?.label}
+        </Button>
       </DropdownTrigger>
       <DropdownMenu
         selectedKeys={[value]}

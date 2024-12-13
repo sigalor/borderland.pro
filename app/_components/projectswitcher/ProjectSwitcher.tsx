@@ -1,6 +1,10 @@
 import React from "react";
 import { Button, Tooltip } from "@nextui-org/react";
-import { SettingOutlined, LogoutOutlined } from "@ant-design/icons";
+import {
+  SettingOutlined,
+  LogoutOutlined,
+  GithubOutlined,
+} from "@ant-design/icons";
 import AddProjectButton from "./AddProjectButton";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/client";
@@ -28,7 +32,7 @@ export default function ProjectSwitcher() {
               radius="full"
               variant="light"
               className="bg-default-100 hover:bg-default-200"
-              onClick={() => router.push("/admin/users")}
+              onPress={() => router.push("/admin/users")}
             >
               <SettingOutlined style={{ fontSize: "20px" }} />
             </Button>
@@ -45,7 +49,7 @@ export default function ProjectSwitcher() {
             radius="full"
             variant="light"
             className="bg-white hover:bg-default-200 p-1"
-            onClick={() => router.push(`/${p.type}/${p.slug}`)}
+            onPress={() => router.push(`/${p.type}/${p.slug}`)}
           >
             <div className="w-full h-full relative">
               <Image
@@ -64,13 +68,27 @@ export default function ProjectSwitcher() {
       {/* Spacer to push sign out to bottom */}
       <div className="flex-grow" />
 
+      <Tooltip content="GitHub" placement="right">
+        <Button
+          isIconOnly
+          radius="full"
+          variant="light"
+          className="bg-default-50 hover:bg-default-200"
+          onPress={() =>
+            window.open("https://github.com/hermesloom/theglobalburn", "_blank")
+          }
+        >
+          <GithubOutlined style={{ fontSize: "20px" }} />
+        </Button>
+      </Tooltip>
+
       <Tooltip content="Sign out" placement="right">
         <Button
           isIconOnly
           radius="full"
           variant="light"
           className="bg-danger/10 hover:bg-danger/20 text-danger"
-          onClick={() => supabase!.auth.signOut()}
+          onPress={() => supabase!.auth.signOut()}
         >
           <LogoutOutlined style={{ fontSize: "20px" }} />
         </Button>

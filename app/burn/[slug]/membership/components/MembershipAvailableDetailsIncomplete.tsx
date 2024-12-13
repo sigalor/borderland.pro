@@ -1,0 +1,56 @@
+"use client";
+
+import React, { useState } from "react";
+import { useProject } from "@/app/_components/SessionContext";
+import MemberDetailsInput from "./MemberDetailsInput";
+import { MemberDetailsData } from "./MemberDetails";
+import { apiPatch } from "@/app/_components/api";
+import ActionButton from "@/app/_components/ActionButton";
+
+export default function MembershipAvailableDetailsIncomplete() {
+  const { project, reloadProfile } = useProject();
+  const [memberDetails, setMemberDetails] = useState<MemberDetailsData | null>(
+    null
+  );
+
+  return (
+    <div className="flex flex-col gap-4">
+      <p>There is a membership available for you to purchase!</p>
+      <p>
+        Your membership is reserved for you until{" "}
+        <b>
+          {new Date(
+            project?.membership_purchase_right?.expires_at!
+          ).toLocaleString()}
+        </b>
+        . If you don't complete the purchase of your membership by then, it will
+        be released to the public in the open sale.
+      </p>
+      <p>
+        To get started, please first complete the following details,{" "}
+        <b>exactly like on your official documents</b>. You will not be able to
+        change these details later.
+      </p>
+      <MemberDetailsInput
+        value={memberDetails}
+        setValue={setMemberDetails}
+        minAge18
+      />
+      <ActionButton
+        color="primary"
+        isDisabled={!memberDetails}
+        action={{
+          key: "submit",
+          label: "Submit",
+          onClick: async () => {
+            await apiPatch(
+              `/burn/${project?.slug}/set-membership-purchase-right-details`,
+              memberDetails
+            );
+            await reloadProfile();
+          },
+        }}
+      />
+    </div>
+  );
+}

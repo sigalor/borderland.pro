@@ -20,7 +20,7 @@ export default function AddProjectButton() {
         radius="full"
         variant="light"
         className="bg-success/10 hover:bg-success/20 text-success"
-        onClick={onOpen}
+        onPress={onOpen}
       >
         <PlusOutlined style={{ fontSize: "20px" }} />
       </Button>

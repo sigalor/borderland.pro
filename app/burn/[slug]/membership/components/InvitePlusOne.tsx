@@ -1,0 +1,60 @@
+"use client";
+
+import React, { useState } from "react";
+import { Input } from "@nextui-org/react";
+import Heading from "@/app/_components/Heading";
+import ActionButton from "@/app/_components/ActionButton";
+import { useProject } from "@/app/_components/SessionContext";
+import { apiPost } from "@/app/_components/api";
+import { BurnStage } from "@/utils/types";
+import toast from "react-hot-toast";
+
+export default function InvitePlusOne() {
+  const { project, reloadProfile } = useProject();
+  const [email, setEmail] = useState("");
+  const isValidEmail = email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
+
+  if (
+    project?.burn_config.current_stage !== BurnStage.LotteryClosed ||
+    !project.lottery_ticket?.can_invite_plus_one
+  ) {
+    return null;
+  }
+
+  return (
+    <>
+      <Heading className="mt-12">Invite a +1!</Heading>
+      <div className="flex flex-col gap-4">
+        <p>
+          You can invite a +1 until the open sale starts at{" "}
+          <b>
+            {new Date(
+              project.burn_config.open_sale_starting_at
+            ).toLocaleString()}
+          </b>
+          .
+        </p>
+        <Input
+          label="Email with which the intended recipient registered on this platform"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <ActionButton
+          color="primary"
+          isDisabled={!isValidEmail}
+          action={{
+            key: "invite-plus-one",
+            label: "Invite",
+            onClick: async () => {
+              await apiPost(`/burn/${project?.slug}/invite-plus-one`, {
+                email,
+              });
+              await reloadProfile();
+              toast.success("Invite sent!");
+            },
+          }}
+        />
+      </div>
+    </>
+  );
+}

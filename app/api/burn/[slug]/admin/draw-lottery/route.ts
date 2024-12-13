@@ -3,7 +3,7 @@ import {
   BurnLotteryTicket,
   BurnRole,
   BurnConfig,
-  BurnMembership,
+  BurnMembershipPurchaseRight,
 } from "@/utils/types";
 
 function shuffleArray<T>(array: T[]): T[] {
@@ -14,6 +14,7 @@ function shuffleArray<T>(array: T[]): T[] {
   return array;
 }
 
+// draw lottery winners
 export const POST = requestWithProject(
   async (supabase, profile, request, body, project) => {
     const burnConfig: BurnConfig = await query(() =>
@@ -32,6 +33,10 @@ export const POST = requestWithProject(
           .eq("project_id", project!.id)
       )
     );
+
+    if (allLotteryTicketsShuffled.some((lt) => lt.is_winner)) {
+      throw new Error("Lottery winners already drawn");
+    }
 
     // determine how many lottery winners there are in total
     const numLotteryWinners = Math.floor(
@@ -73,54 +78,29 @@ export const POST = requestWithProject(
       supabase.from("burn_lottery_tickets").select("*").in("id", winnerIds)
     );
 
-    const memberships: Partial<BurnMembership>[] = winningLotteryTickets.map(
-      (ticket) => ({
+    const membershipPurchaseRights: Partial<BurnMembershipPurchaseRight>[] =
+      winningLotteryTickets.map((ticket) => ({
         project_id: project!.id,
-        owner_id: profile!.id,
-        from_lottery_ticket_id: ticket.id,
+        owner_id: (ticket as any).owner_id,
+        expires_at: burnConfig.open_sale_starting_at,
         first_name: ticket.first_name,
         last_name: ticket.last_name,
         birthdate: ticket.birthdate,
-        reserved_until: burnConfig.open_sale_starting_at,
-      })
-    );
+        is_low_income: lowIncomeWinnerIds.includes(ticket.id)
+          ? ticket.is_low_income
+          : false,
+        details_modifiable: false,
+      }));
 
-    await query(() => supabase.from("burn_memberships").insert(memberships));
+    await query(() =>
+      supabase
+        .from("burn_membership_purchase_rights")
+        .insert(membershipPurchaseRights)
+    );
 
     return {
       numDrawn: lowIncomeWinnerIds.length + otherWinnerIds.length,
     };
-  },
-  undefined,
-  BurnRole.Admin
-);
-
-export const DELETE = requestWithProject(
-  async (supabase, profile, request, body, project) => {
-    // first, reset the lottery tickets to not be winners
-    await query(() =>
-      supabase
-        .from("burn_lottery_tickets")
-        .update({ is_winner: false, can_invite_plus_one: false })
-        .eq("project_id", project!.id)
-    );
-
-    // then, delete all memberships that were created from lottery tickets
-    const burnLotteryTickets: BurnLotteryTicket[] = await query(() =>
-      supabase
-        .from("burn_lottery_tickets")
-        .select("*, burn_memberships(id)")
-        .eq("project_id", project!.id)
-    );
-    await query(() =>
-      supabase
-        .from("burn_memberships")
-        .delete()
-        .in(
-          "from_lottery_ticket_id",
-          burnLotteryTickets.map((ticket) => ticket.id)
-        )
-    );
   },
   undefined,
   BurnRole.Admin

@@ -1,13 +1,12 @@
 "use client";
 
 import React from "react";
-import DataTable from "@/app/_components/admin/DataTable";
+import DataTable, { DataItem, FullData } from "@/app/_components/DataTable";
 import { useProject } from "@/app/_components/SessionContext";
 import { BurnStage } from "@/utils/types";
-import { apiPost, apiDelete } from "@/app/_components/api";
+import { apiPost } from "@/app/_components/api";
 import toast from "react-hot-toast";
 import { BurnLotteryTicket } from "@/utils/types";
-import { DataItem, FullData } from "@/app/_components/admin/DataTable";
 
 export default function LotteryTicketsPage() {
   const { project, updateBurnConfig, reloadProfile } = useProject();
@@ -64,26 +63,17 @@ export default function LotteryTicketsPage() {
             stage === BurnStage.LotteryClosed && !hasWinners(data),
           onClick: async () => {
             const { numDrawn } = await apiPost(
-              `/burn/${project?.slug}/admin/lottery-winners`
+              `/burn/${project?.slug}/admin/draw-lottery`
             );
             await reloadProfile();
             toast.success(`${numDrawn} winners were drawn!`);
             return true;
           },
         },
-        {
-          key: "reset-winners",
-          label: "Reset winners",
-          condition: (data) =>
-            stage === BurnStage.LotteryClosed && hasWinners(data),
-          onClick: async () => {
-            await apiDelete(`/burn/${project?.slug}/admin/lottery-winners`);
-            await reloadProfile();
-            toast.success("Winners were reset!");
-            return true;
-          },
-        },
       ]}
+      rowActionsCrud={{
+        delete: true,
+      }}
     />
   );
 }

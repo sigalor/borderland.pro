@@ -69,24 +69,35 @@ create table burn_lottery_tickets (
   is_low_income boolean default false,
   is_winner boolean default false,
   can_invite_plus_one boolean default false,
-  added_to_waitlist_at timestamp with time zone, -- only relevant when no memberships are available in the open sale anymore, needed to determine the order of the waitlist; waiting list and open sale are identical
   unique (project_id, first_name, last_name, birthdate),
   check (birthdate ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+);
+
+create table burn_membership_purchase_rights (
+  id uuid primary key default gen_random_uuid(),
+  created_at timestamp with time zone default now(),
+  project_id uuid references projects not null,
+  owner_id uuid references profiles not null,
+  expires_at timestamp with time zone not null,
+  first_name text,
+  last_name text,
+  birthdate text,
+  is_low_income boolean default false,
+  details_modifiable boolean default false,
+  check(birthdate is null or birthdate ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
 );
 
 create table burn_memberships (
   id uuid primary key default gen_random_uuid(),
   created_at timestamp with time zone default now(),
   project_id uuid references projects not null,
-  owner_id uuid references profiles not null, -- irrelevant if reserved_until is not null AND reserved_until is in the past (but even when reserved_until is in the past, the owner_id is still kept, for the case that the user clicks the 'Purchase membership' before the reserved_until timestamp, but the payment is completed after it. 'Officially' the user is then not owner of the membership anymore, but in case it hasn't been taken by anyone else in the meantime, the user can still claim it)
-  from_lottery_ticket_id uuid references burn_lottery_tickets,
+  owner_id uuid references profiles not null,
   first_name text not null,
   last_name text not null,
   birthdate text not null,
-  reserved_until timestamp with time zone,
-  price float,
-  price_currency text,
-  paid_at timestamp with time zone, -- only actually valid when this is set
+  stripe_payment_intent_id text,
+  price float not null,
+  price_currency text not null,
   checked_in_at timestamp with time zone, -- this is set when the user checks in at the event
   unique (project_id, first_name, last_name, birthdate),
   check (birthdate ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'),

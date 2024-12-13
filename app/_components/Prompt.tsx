@@ -105,7 +105,7 @@ export default function Prompt({ config }: { config: PromptConfig }) {
                 (!field.canBeEmpty && !inputs[field.key]) ||
                 (field.validate && !field.validate(inputs[field.key]))
             )}
-            onClick={() => {
+            onPress={() => {
               config.fields?.forEach((field) => {
                 if (field.transform) {
                   inputs[field.key] = field.transform(inputs[field.key]);

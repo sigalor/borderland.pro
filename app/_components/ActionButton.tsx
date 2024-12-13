@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@nextui-org/react";
+import { Button, Tooltip } from "@nextui-org/react";
 import { PromptResult } from "@/app/_components/Prompt";
 
 export type ActionButtonOnClickHandler<T> = (
@@ -11,7 +11,9 @@ export type ActionButtonOnClickHandler<T> = (
 
 export type ActionButtonDef<T = undefined> = {
   key: string;
-  label: string;
+  label?: string;
+  icon?: React.ReactNode;
+  tooltip?: string;
   condition?: (data?: T) => boolean;
   onClick:
     | ActionButtonOnClickHandler<T>
@@ -19,16 +21,17 @@ export type ActionButtonDef<T = undefined> = {
         prompt: (data?: T) => Promise<PromptResult | undefined>;
         handler: ActionButtonOnClickHandler<T>;
       };
+  successCallback?: () => void;
 };
 
 export default function ActionButton<T>({
   action,
   data,
-  successCallback,
+  ...props
 }: {
   action: ActionButtonDef<T>;
   data?: T;
-  successCallback?: () => void;
+  [key: string]: any;
 }) {
   const [loading, setLoading] = useState(false);
 
@@ -37,9 +40,10 @@ export default function ActionButton<T>({
     return null;
   }
 
-  return (
+  const button = (
     <Button
-      key={action.label}
+      {...props}
+      isIconOnly={!action.label && !!action.icon}
       isLoading={loading}
       onPress={async () => {
         try {
@@ -58,8 +62,8 @@ export default function ActionButton<T>({
           if (!promptHandler || promptResult) {
             setLoading(true);
             const handlerResult = await handler(data, promptResult);
-            if (handlerResult && successCallback) {
-              successCallback();
+            if (handlerResult && action.successCallback) {
+              action.successCallback();
             }
           }
         } finally {
@@ -67,7 +71,13 @@ export default function ActionButton<T>({
         }
       }}
     >
+      {action.icon}
       {action.label}
     </Button>
   );
+
+  if (action.tooltip) {
+    return <Tooltip content={action.tooltip}>{button}</Tooltip>;
+  }
+  return button;
 }

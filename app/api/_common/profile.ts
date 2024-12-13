@@ -10,7 +10,7 @@ export async function getProfile(
     supabase
       .from("profiles")
       .select(
-        "*, role_assignments(roles(name, project_id)), burn_lottery_tickets(*), burn_memberships(*)"
+        "*, role_assignments(roles(name, project_id)), burn_lottery_tickets(*), burn_membership_purchase_rights(*), burn_memberships(*)"
       )
       .eq("id", userId)
       .single()
@@ -37,18 +37,19 @@ export async function getProfile(
   }
   delete profile.burn_lottery_tickets;
 
+  for (const bmp of profile.burn_membership_purchase_rights) {
+    if (new Date(bmp.expires_at) < new Date()) {
+      continue;
+    }
+
+    const project: Project = projects.find((p: any) => p.id === bmp.project_id);
+    project.membership_purchase_right = bmp;
+  }
+  delete profile.burn_membership_purchase_rights;
+
   for (const bm of profile.burn_memberships) {
     const project: Project = projects.find((p: any) => p.id === bm.project_id);
     project.membership = bm;
-
-    if (
-      !project.membership?.paid_at &&
-      (!project.membership?.reserved_until ||
-        +new Date(project.membership?.reserved_until) < +new Date())
-    ) {
-      // if the membership hasn't been paid yet and it hasn't been reserved or the reservation is expired, it doesn't actually belong to the user
-      delete project.membership;
-    }
   }
   delete profile.burn_memberships;
 

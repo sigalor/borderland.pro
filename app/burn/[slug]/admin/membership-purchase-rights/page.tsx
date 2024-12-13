@@ -3,16 +3,13 @@
 import React from "react";
 import DataTable from "@/app/_components/DataTable";
 import { useProject } from "@/app/_components/SessionContext";
-import { formatMoney } from "@/app/_components/utils";
-import { BurnStage } from "@/utils/types";
-import { apiPost } from "@/app/_components/api";
 
-export default function MembershipsPage() {
+export default function MembershipPurchaseRightsPage() {
   const { project } = useProject();
   return (
     <DataTable
-      title="Memberships"
-      endpoint={`/burn/${project?.slug}/admin/memberships`}
+      title="Membership purchase rights"
+      endpoint={`/burn/${project?.slug}/admin/membership-purchase-rights`}
       columns={[
         {
           key: "email",
@@ -33,20 +30,12 @@ export default function MembershipsPage() {
           render: (bd) => bd,
         },
         {
-          key: "price",
-          label: "Price",
-          render: (_, { price, price_currency }) =>
-            formatMoney(price, price_currency),
+          key: "is_low_income",
+          label: "Is low income?",
         },
-      ]}
-      globalActions={[
         {
-          key: "start-open-sale",
-          label: "Start open sale",
-          condition: () =>
-            project?.burn_config.current_stage === BurnStage.LotteryClosed,
-          onClick: () =>
-            apiPost(`/burn/${project?.slug}/admin/start-open-sale`),
+          key: "expires_at",
+          label: "Expires at",
         },
       ]}
       rowActionsCrud={{

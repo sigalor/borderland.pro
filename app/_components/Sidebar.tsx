@@ -40,10 +40,12 @@ export function Sidebar({ routes }: SidebarProps) {
               className={`justify-start ${
                 pathname === route.path ? "bg-content3 font-bold" : ""
               }`}
-              onClick={() => router.push(route.path)}
+              onPress={() => router.push(route.path)}
               startContent={route.icon}
             >
-              {route.label}
+              <span className="overflow-hidden text-ellipsis whitespace-nowrap">
+                {route.label}
+              </span>
             </Button>
           )
         )}

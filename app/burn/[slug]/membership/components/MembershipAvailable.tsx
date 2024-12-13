@@ -8,6 +8,7 @@ import { BurnMembershipPricing } from "@/utils/types";
 import { formatMoney } from "@/app/_components/utils";
 import { apiPost, apiGet } from "@/app/_components/api";
 import { useSearchParams, useRouter } from "next/navigation";
+import InvitePlusOne from "./InvitePlusOne";
 
 export default function MembershipAvailable() {
   const { project, reloadProfile } = useProject();
@@ -59,7 +60,7 @@ export default function MembershipAvailable() {
     try {
       const { url } = await apiPost(
         `/burn/${project?.slug}/purchase-membership`,
-        { tier, origin: window.location.href }
+        { tier, originUrl: window.location.href }
       );
       window.location.href = url;
     } finally {
@@ -82,11 +83,11 @@ export default function MembershipAvailable() {
               Your membership is reserved for you until{" "}
               <b>
                 {new Date(
-                  project?.membership?.reserved_until!
+                  project?.membership_purchase_right?.expires_at!
                 ).toLocaleString()}
               </b>
-              . If you don't purchase your membership by then, it will be
-              released to the public.
+              . If you don't complete the purchase of your membership by then,
+              it will be released to the public in the open sale.
             </p>
           </>
         )}
@@ -95,7 +96,7 @@ export default function MembershipAvailable() {
         project?.burn_config.membership_pricing_type ===
           BurnMembershipPricing.Tiered3 ? (
           <div className="flex flex-col gap-2">
-            {project.lottery_ticket?.is_low_income ? (
+            {project.membership_purchase_right?.is_low_income ? (
               <Button
                 onPress={() => purchaseMembership(1)}
                 isLoading={isLoading === 1}
@@ -133,7 +134,8 @@ export default function MembershipAvailable() {
           </div>
         ) : null}
       </div>
-      <MemberDetailsWithHeading data={project?.lottery_ticket!} />
+      <InvitePlusOne />
+      <MemberDetailsWithHeading data={project?.membership_purchase_right!} />
     </>
   );
 }

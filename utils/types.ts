@@ -14,6 +14,7 @@ export enum BurnMembershipPricing {
 }
 
 export type BurnConfig = {
+  id: string;
   current_stage: BurnStage;
   open_sale_starting_at: string;
   open_sale_reservation_duration: number;
@@ -38,17 +39,27 @@ export type BurnLotteryTicket = {
   is_low_income: boolean;
   is_winner: boolean;
   can_invite_plus_one: boolean;
-  added_to_waitlist_at: string;
+};
+
+export type BurnMembershipPurchaseRight = {
+  id: string;
+  created_at: string;
+  expires_at: string;
+  first_name: string;
+  last_name: string;
+  birthdate: string;
+  is_low_income: boolean;
+  details_modifiable: boolean;
 };
 
 export type BurnMembership = {
   id: string;
+  created_at: string;
   first_name: string;
   last_name: string;
   birthdate: string;
-  reserved_until: string;
   price: number;
-  paid_at: string;
+  price_currency: string;
   checked_in_at: string;
 };
 
@@ -61,6 +72,7 @@ export type Project = {
   roles: BurnRole[];
   burn_config: BurnConfig;
   lottery_ticket?: BurnLotteryTicket;
+  membership_purchase_right?: BurnMembershipPurchaseRight;
   membership?: BurnMembership;
 };
 

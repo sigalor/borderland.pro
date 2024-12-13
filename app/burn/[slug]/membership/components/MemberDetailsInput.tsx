@@ -1,0 +1,100 @@
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { Input, Checkbox } from "@nextui-org/react";
+import { calculateAge } from "@/app/_components/utils";
+import { useProject } from "@/app/_components/SessionContext";
+import { usePrompt } from "@/app/_components/PromptContext";
+import { MemberDetailsData } from "./MemberDetails";
+
+export default function MemberDetailsInput({
+  value,
+  setValue,
+  minAge18,
+  withLowIncome,
+  withLowIncomePrompt,
+}: {
+  value: MemberDetailsData | null;
+  setValue: (value: MemberDetailsData | null) => void;
+  minAge18?: boolean;
+  withLowIncome?: boolean;
+  withLowIncomePrompt?: boolean;
+}) {
+  const prompt = usePrompt();
+  const { project, updateProjectSimple } = useProject();
+  const [firstName, setFirstName] = useState(value?.first_name ?? "");
+  const [lastName, setLastName] = useState(value?.last_name ?? "");
+  const [birthdate, setBirthdate] = useState(value?.birthdate ?? "");
+  const [isLowIncome, setIsLowIncome] = useState(value?.is_low_income ?? false);
+
+  const isBirthdateWellFormatted = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(
+    birthdate
+  );
+  const isAgeValid =
+    isBirthdateWellFormatted && (!minAge18 || calculateAge(birthdate) >= 18);
+
+  useEffect(() => {
+    if (!firstName || !lastName || !isAgeValid) {
+      setValue(null);
+      return;
+    }
+
+    const obj: MemberDetailsData = {
+      first_name: firstName,
+      last_name: lastName,
+      birthdate: birthdate,
+      is_low_income: isLowIncome,
+    };
+
+    if (!withLowIncome) {
+      delete obj.is_low_income;
+    }
+
+    setValue(obj);
+  }, [firstName, lastName, birthdate, isLowIncome]);
+
+  return (
+    <div className="flex flex-col gap-4">
+      <Input
+        label="First name"
+        value={firstName}
+        onValueChange={setFirstName}
+      />
+      <Input label="Last name" value={lastName} onValueChange={setLastName} />
+      <Input
+        label="Date of birth (YYYY-MM-DD)"
+        value={birthdate}
+        onValueChange={setBirthdate}
+        isInvalid={isBirthdateWellFormatted && !isAgeValid}
+        errorMessage={
+          isBirthdateWellFormatted && !isAgeValid
+            ? "You must be at least 18 years old"
+            : undefined
+        }
+      />
+      {withLowIncome ? (
+        <Checkbox
+          isSelected={isLowIncome}
+          onValueChange={async (newIsLowIncome) => {
+            if (newIsLowIncome) {
+              if (withLowIncomePrompt) {
+                const resp = await prompt(
+                  "Please answer a few questions to determine your eligibility for low income membership."
+                );
+                if (resp) {
+                  setIsLowIncome(true);
+                }
+              } else {
+                setIsLowIncome(true);
+              }
+            } else {
+              setIsLowIncome(false);
+            }
+          }}
+        >
+          Low income?
+        </Checkbox>
+      ) : null}
+    </div>
+  );
+}

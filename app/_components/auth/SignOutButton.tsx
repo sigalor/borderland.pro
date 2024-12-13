@@ -6,7 +6,7 @@ export default function SignOutButton() {
   const supabase = createClient();
 
   return (
-    <Button color="danger" onClick={() => supabase!.auth.signOut()}>
+    <Button color="danger" onPress={() => supabase!.auth.signOut()}>
       Sign out
     </Button>
   );

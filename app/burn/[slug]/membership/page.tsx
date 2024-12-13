@@ -7,15 +7,18 @@ import { BurnStage } from "@/utils/types";
 import LotteryOpenNotEntered from "./components/LotteryOpenNotEntered";
 import LotteryOpenEntered from "./components/LotteryOpenEntered";
 import LotteryClosedNotEntered from "./components/LotteryClosedNotEntered";
+import MembershipAvailableDetailsIncomplete from "./components/MembershipAvailableDetailsIncomplete";
 import MembershipAvailable from "./components/MembershipAvailable";
 import LotteryClosedNotWinner from "./components/LotteryClosedNotWinner";
 import Member from "./components/Member";
+import Support from "./components/Support";
 
 export enum MembershipStatus {
   LotteryOpenNotEntered,
   LotteryOpenEntered,
   LotteryClosedNotEntered,
   LotteryClosedNotWinner,
+  MembershipAvailableDetailsIncomplete,
   MembershipAvailable,
   Member,
   Invalid,
@@ -23,31 +26,28 @@ export enum MembershipStatus {
 
 export default function MembershipPage() {
   const { project } = useProject();
+  const stage = project?.burn_config.current_stage;
 
   const getMembershipStatus = (): MembershipStatus => {
-    const stage = project?.burn_config.current_stage;
-    const hasEntered = !!project?.lottery_ticket;
-    const hasWon = !!project?.lottery_ticket?.is_winner;
-
     if (project?.membership) {
-      if (project?.membership?.paid_at) {
-        return MembershipStatus.Member;
+      return MembershipStatus.Member;
+    } else if (project?.membership_purchase_right) {
+      if (project.membership_purchase_right.details_modifiable) {
+        return MembershipStatus.MembershipAvailableDetailsIncomplete;
       } else {
         return MembershipStatus.MembershipAvailable;
       }
     }
 
     if (stage === BurnStage.LotteryOpen) {
-      if (hasEntered) {
+      if (project?.lottery_ticket) {
         return MembershipStatus.LotteryOpenEntered;
       } else {
         return MembershipStatus.LotteryOpenNotEntered;
       }
     } else if (stage === BurnStage.LotteryClosed) {
-      if (hasEntered) {
-        if (!hasWon) {
-          return MembershipStatus.LotteryClosedNotWinner;
-        }
+      if (project?.lottery_ticket) {
+        return MembershipStatus.LotteryClosedNotWinner;
       } else {
         return MembershipStatus.LotteryClosedNotEntered;
       }
@@ -67,6 +67,8 @@ export default function MembershipPage() {
         return <LotteryClosedNotEntered />;
       case MembershipStatus.LotteryClosedNotWinner:
         return <LotteryClosedNotWinner />;
+      case MembershipStatus.MembershipAvailableDetailsIncomplete:
+        return <MembershipAvailableDetailsIncomplete />;
       case MembershipStatus.MembershipAvailable:
         return <MembershipAvailable />;
       case MembershipStatus.Member:
@@ -80,11 +82,16 @@ export default function MembershipPage() {
     <div>
       <Heading>
         {membershipStatus === MembershipStatus.Member ||
-        membershipStatus === MembershipStatus.MembershipAvailable
+        membershipStatus === MembershipStatus.MembershipAvailable ||
+        membershipStatus ===
+          MembershipStatus.MembershipAvailableDetailsIncomplete
           ? "Your membership"
-          : "Membership lottery"}
+          : stage === BurnStage.OpenSale
+            ? "Open membership sale"
+            : "Membership lottery"}
       </Heading>
       {renderContent()}
+      <Support />
     </div>
   );
 }

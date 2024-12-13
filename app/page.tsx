@@ -16,7 +16,8 @@ export default function Home() {
       <div className="text-8xl mb-4">❤️‍🔥</div>
       {profile?.projects.find((p) => p.slug === "the-borderland-2025") ? (
         <Button
-          onClick={() => router.push("/burn/the-borderland-2025/membership")}
+          color="primary"
+          onPress={() => router.push("/burn/the-borderland-2025/membership")}
         >
           Go to my membership
         </Button>

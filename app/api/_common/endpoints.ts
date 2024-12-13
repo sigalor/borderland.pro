@@ -47,8 +47,12 @@ export function requestWithAuth<T = any>(
         return response;
       }
       return NextResponse.json(response ?? {});
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error processing request:", error);
+      if (error.message) {
+        return NextResponse.json({ error: error.message }, { status: 400 });
+      }
+
       return NextResponse.json(
         { error: "Internal Server Error" },
         { status: 500 }

@@ -8,8 +8,9 @@ import {
   TableCell,
   Pagination,
   getKeyValue,
-  Snippet,
 } from "@nextui-org/react";
+import { ActionButtonDef } from "@/app/_components/ActionButton";
+import ActionButton from "./ActionButton";
 
 interface Column {
   key: string;
@@ -24,6 +25,7 @@ interface BasicTableProps<T> {
   rowsPerPage?: number;
   ariaLabel?: string;
   keyField?: keyof T;
+  rowActions?: ActionButtonDef<T>[];
 }
 
 export default function BasicTable<T extends Record<string, any>>({
@@ -33,6 +35,7 @@ export default function BasicTable<T extends Record<string, any>>({
   rowsPerPage = 4,
   ariaLabel = "Table with pagination",
   keyField = "id",
+  rowActions,
 }: BasicTableProps<T>) {
   const [page, setPage] = React.useState(1);
   const pages = Math.ceil(data.length / rowsPerPage);
@@ -64,6 +67,11 @@ export default function BasicTable<T extends Record<string, any>>({
     return value;
   };
 
+  const columnsFull =
+    rowActions?.length! > 0
+      ? [...columns, { key: "actions", label: "Actions" }]
+      : columns;
+
   return (
     <Table
       aria-label={ariaLabel}
@@ -82,16 +90,36 @@ export default function BasicTable<T extends Record<string, any>>({
       }
     >
       <TableHeader>
-        {columns.map((column) => (
+        {columnsFull.map((column) => (
           <TableColumn key={column.key}>{column.label}</TableColumn>
         ))}
       </TableHeader>
       <TableBody items={items}>
         {(item) => (
           <TableRow key={item[keyField]}>
-            {(columnKey) => (
-              <TableCell>{getCellContent(item, columnKey as any)}</TableCell>
-            )}
+            {(columnKey) => {
+              if (columnKey === "actions" && rowActions?.length! > 0) {
+                return (
+                  <TableCell key={columnKey}>
+                    <div className="flex gap-2">
+                      {rowActions!.map((action) => (
+                        <ActionButton
+                          key={action.key}
+                          action={action}
+                          data={item}
+                          size="sm"
+                        />
+                      ))}
+                    </div>
+                  </TableCell>
+                );
+              }
+              return (
+                <TableCell key={columnKey}>
+                  {getCellContent(item, columnKey as any)}
+                </TableCell>
+              );
+            }}
           </TableRow>
         )}
       </TableBody>
