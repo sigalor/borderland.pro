@@ -2,7 +2,7 @@
 
 import React, { useEffect } from "react";
 import { useProject } from "@/app/_components/SessionContext";
-import MemberDetailsWithHeading from "./MemberDetailsWithHeading";
+import MemberDetailsWithHeading from "./helpers/MemberDetailsWithHeading";
 import InvitePlusOne from "./InvitePlusOne";
 import { QRCodeSVG } from "qrcode.react";
 import { useSearchParams, useRouter } from "next/navigation";

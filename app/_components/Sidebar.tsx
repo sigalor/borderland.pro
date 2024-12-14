@@ -27,7 +27,7 @@ export function Sidebar({ routes }: SidebarProps) {
     >
       <div className="flex flex-col gap-2">
         {routes.map((route: any, i) =>
-          route.separator ? (
+          route === null ? null : route.separator ? (
             <div
               key={i}
               className="h-[1px] w-full my-2"

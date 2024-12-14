@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { Button, Spinner } from "@nextui-org/react";
 import { useProject } from "@/app/_components/SessionContext";
-import MemberDetailsWithHeading from "./MemberDetailsWithHeading";
+import MemberDetailsWithHeading from "./helpers/MemberDetailsWithHeading";
 import { BurnMembershipPricing } from "@/utils/types";
 import { formatMoney } from "@/app/_components/utils";
 import { apiPost, apiGet } from "@/app/_components/api";

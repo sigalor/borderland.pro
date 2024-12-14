@@ -14,7 +14,7 @@ import {
 } from "@ant-design/icons";
 import { useProject } from "@/app/_components/SessionContext";
 import { redirect } from "next/navigation";
-import { BurnRole } from "@/utils/types";
+import { BurnRole, BurnStage } from "@/utils/types";
 
 export default function ProjectLayout({
   children,
@@ -45,7 +45,9 @@ export default function ProjectLayout({
             label:
               project.membership || project.membership_purchase_right
                 ? "Your membership"
-                : "Membership lottery",
+                : project.burn_config.current_stage === BurnStage.OpenSale
+                  ? "Open membership sale"
+                  : "Membership lottery",
             path: `/burn/${project?.slug}/membership`,
             icon: <IdcardOutlined />,
           },
@@ -59,11 +61,13 @@ export default function ProjectLayout({
           ...(project.roles.includes(BurnRole.Admin)
             ? ([
                 { separator: true },
-                {
-                  label: "Lottery tickets",
-                  path: `/burn/${project?.slug}/admin/lottery-tickets`,
-                  icon: <WalletOutlined />,
-                },
+                project.burn_config.current_stage !== BurnStage.OpenSale
+                  ? {
+                      label: "Lottery tickets",
+                      path: `/burn/${project?.slug}/admin/lottery-tickets`,
+                      icon: <WalletOutlined />,
+                    }
+                  : null,
                 {
                   label: "Membership purchase rights",
                   path: `/burn/${project?.slug}/admin/membership-purchase-rights`,

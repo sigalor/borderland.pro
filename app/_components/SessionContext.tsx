@@ -11,8 +11,7 @@ import React, {
 import { Session } from "@supabase/supabase-js";
 import { createClient } from "@/utils/supabase/client";
 import { produce } from "immer";
-import { apiGet, apiPost, apiPatch, apiDelete } from "./api";
-import { v4 as uuidv4 } from "uuid";
+import { apiGet, apiPatch } from "./api";
 import { useParams } from "next/navigation";
 import { Profile, Project, BurnConfig } from "@/utils/types";
 

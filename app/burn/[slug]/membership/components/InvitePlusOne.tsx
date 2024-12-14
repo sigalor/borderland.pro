@@ -8,11 +8,11 @@ import { useProject } from "@/app/_components/SessionContext";
 import { apiPost } from "@/app/_components/api";
 import { BurnStage } from "@/utils/types";
 import toast from "react-hot-toast";
+import { isEmail } from "@/app/_components/utils";
 
 export default function InvitePlusOne() {
   const { project, reloadProfile } = useProject();
   const [email, setEmail] = useState("");
-  const isValidEmail = email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/);
 
   if (
     project?.burn_config.current_stage !== BurnStage.LotteryClosed ||
@@ -41,7 +41,7 @@ export default function InvitePlusOne() {
         />
         <ActionButton
           color="primary"
-          isDisabled={!isValidEmail}
+          isDisabled={!isEmail(email)}
           action={{
             key: "invite-plus-one",
             label: "Invite",

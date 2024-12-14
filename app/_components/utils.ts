@@ -21,3 +21,7 @@ export function formatMoney(amount: number, currency: string) {
   });
   return formatter.format(amount);
 }
+
+export function isEmail(email: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}

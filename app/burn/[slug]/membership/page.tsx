@@ -12,6 +12,7 @@ import MembershipAvailable from "./components/MembershipAvailable";
 import LotteryClosedNotWinner from "./components/LotteryClosedNotWinner";
 import Member from "./components/Member";
 import Support from "./components/Support";
+import OpenSale from "./components/OpenSale";
 
 export enum MembershipStatus {
   LotteryOpenNotEntered,
@@ -21,6 +22,7 @@ export enum MembershipStatus {
   MembershipAvailableDetailsIncomplete,
   MembershipAvailable,
   Member,
+  OpenSale,
   Invalid,
 }
 
@@ -51,6 +53,8 @@ export default function MembershipPage() {
       } else {
         return MembershipStatus.LotteryClosedNotEntered;
       }
+    } else if (stage === BurnStage.OpenSale) {
+      return MembershipStatus.OpenSale;
     }
     return MembershipStatus.Invalid;
   };
@@ -73,6 +77,8 @@ export default function MembershipPage() {
         return <MembershipAvailable />;
       case MembershipStatus.Member:
         return <Member />;
+      case MembershipStatus.OpenSale:
+        return <OpenSale />;
       case MembershipStatus.Invalid:
         return <div>Invalid membership status</div>;
     }
@@ -86,7 +92,7 @@ export default function MembershipPage() {
         membershipStatus ===
           MembershipStatus.MembershipAvailableDetailsIncomplete
           ? "Your membership"
-          : stage === BurnStage.OpenSale
+          : membershipStatus === MembershipStatus.OpenSale
             ? "Open membership sale"
             : "Membership lottery"}
       </Heading>

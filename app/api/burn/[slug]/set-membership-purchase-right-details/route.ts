@@ -1,7 +1,7 @@
 import { requestWithProject, query } from "@/app/api/_common/endpoints";
 import { s } from "ajv-ts";
-import { BurnRole, BurnStage } from "@/utils/types";
-import { getProfile } from "@/app/api/_common/profile";
+import { BurnRole } from "@/utils/types";
+import { checkNoSuchMembershipOrPurchaseRightExists } from "@/app/api/_common/profile";
 
 const SetMembershipPurchaseRightDetailsRequestSchema = s.object({
   first_name: s.string(),
@@ -21,34 +21,13 @@ export const PATCH = requestWithProject<
       throw new Error("Details are not modifiable");
     }
 
-    const existingMembershipPurchaseRight = await query(() =>
-      supabase
-        .from("burn_membership_purchase_rights")
-        .select("*")
-        .eq("project_id", project!.id)
-        .eq("first_name", body.first_name)
-        .eq("last_name", body.last_name)
-        .eq("birthdate", body.birthdate)
-        .gte("expires_at", new Date().toISOString())
+    await checkNoSuchMembershipOrPurchaseRightExists(
+      supabase,
+      project!.id,
+      body.first_name,
+      body.last_name,
+      body.birthdate
     );
-    if (existingMembershipPurchaseRight.length > 0) {
-      throw new Error(
-        "This individual already has an active membership purchase right"
-      );
-    }
-
-    const existingMembership = await query(() =>
-      supabase
-        .from("burn_memberships")
-        .select("*")
-        .eq("project_id", project!.id)
-        .eq("first_name", body.first_name)
-        .eq("last_name", body.last_name)
-        .eq("birthdate", body.birthdate)
-    );
-    if (existingMembership.length > 0) {
-      throw new Error("This individual already has a membership");
-    }
 
     await query(() =>
       supabase

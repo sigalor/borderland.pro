@@ -55,3 +55,105 @@ export async function getProfile(
 
   return { ...profile, projects };
 }
+
+export async function getProfileByEmail(
+  supabase: SupabaseClient,
+  email: string
+): Promise<Profile> {
+  const profile = await query(() =>
+    supabase.from("profiles").select("*").eq("email", email)
+  );
+
+  if (profile.length === 0) {
+    throw new Error("No profile found for " + email);
+  }
+
+  return getProfile(supabase, profile[0].id);
+}
+
+// make sure that the given profile:
+// - is part of the given project
+// - does not have a membership or a membership purchase right for this project already
+export function validateNewMembershipEligibility(
+  profile: Profile,
+  destProject: Project
+) {
+  const recipientProject = profile.projects.find(
+    (p) => p.id === destProject.id
+  );
+
+  if (!recipientProject) {
+    throw new Error(`Recipient needs to join "${destProject.name}" first`);
+  }
+
+  if (recipientProject.membership_purchase_right) {
+    throw new Error(
+      "Recipient already has an available membership to purchase"
+    );
+  }
+
+  if (recipientProject.membership) {
+    throw new Error("Recipient already has a membership");
+  }
+
+  return recipientProject;
+}
+
+export async function checkNoSuchMembershipOrPurchaseRightExists(
+  supabase: SupabaseClient,
+  projectId: string,
+  firstName: string,
+  lastName: string,
+  birthdate: string
+) {
+  const existingMembershipPurchaseRight = await query(() =>
+    supabase
+      .from("burn_membership_purchase_rights")
+      .select("*")
+      .eq("project_id", projectId)
+      .eq("first_name", firstName)
+      .eq("last_name", lastName)
+      .eq("birthdate", birthdate)
+      .gt("expires_at", new Date().toISOString())
+  );
+  if (existingMembershipPurchaseRight.length > 0) {
+    throw new Error(
+      "This individual already has an active membership purchase right"
+    );
+  }
+
+  const existingMembership = await query(() =>
+    supabase
+      .from("burn_memberships")
+      .select("*")
+      .eq("project_id", projectId)
+      .eq("first_name", firstName)
+      .eq("last_name", lastName)
+      .eq("birthdate", birthdate)
+  );
+  if (existingMembership.length > 0) {
+    throw new Error("This individual already has a membership");
+  }
+}
+
+export async function getAvailableMemberships(
+  supabase: SupabaseClient,
+  project: Project
+): Promise<number> {
+  const numMemberships = await supabase
+    .from("burn_memberships")
+    .select("*", { count: "exact" })
+    .eq("project_id", project.id);
+
+  const numMembershipPurchaseRights = await supabase
+    .from("burn_membership_purchase_rights")
+    .select("*", { count: "exact" })
+    .eq("project_id", project.id)
+    .gt("expires_at", new Date().toISOString());
+
+  return (
+    project?.burn_config.max_memberships! -
+    (numMemberships.count ?? 0) -
+    (numMembershipPurchaseRights.count ?? 0)
+  );
+}

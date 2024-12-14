@@ -4,11 +4,11 @@ Hosting a burn for everybody.
 
 ## TODO
 
-- open sale
 - adding children
-- transfer
+- transfer (also add last transfer date to schema)
 - email notifications
 - membership scanner
+- refund membership when revoked by admin
 
 ## Co-creation
 

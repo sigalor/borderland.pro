@@ -26,8 +26,8 @@ export const POST = requestWithAuthAdmin<
       project_id: project.id,
       current_stage: BurnStage.LotteryOpen,
       open_sale_starting_at: new Date().toISOString(),
-      open_sale_reservation_duration: 60 * 15,
-      transfer_reservation_duration: 60 * 60 * 24 * 3,
+      open_sale_reservation_duration: 60 * 30, // 30 minutes
+      transfer_reservation_duration: 60 * 60 * 24 * 7, // 7 days
       max_memberships: 4603,
       membership_price_currency: "SEK",
       membership_pricing_type: "tiered-3",

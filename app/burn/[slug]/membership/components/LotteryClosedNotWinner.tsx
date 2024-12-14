@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import MemberDetailsWithHeading from "./MemberDetailsWithHeading";
+import MemberDetailsWithHeading from "./helpers/MemberDetailsWithHeading";
 import { useProject } from "@/app/_components/SessionContext";
 
 export default function LotteryClosedNotWinner() {

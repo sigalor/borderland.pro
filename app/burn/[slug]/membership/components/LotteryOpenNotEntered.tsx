@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { Button } from "@nextui-org/react";
-import { calculateAge } from "@/app/_components/utils";
 import { apiPost } from "@/app/_components/api";
 import { useProject } from "@/app/_components/SessionContext";
-import MemberDetailsInput from "./MemberDetailsInput";
-import { MemberDetailsData } from "./MemberDetails";
+import MemberDetailsInput from "./helpers/MemberDetailsInput";
+import { MemberDetailsData } from "./helpers/MemberDetails";
 import ActionButton from "@/app/_components/ActionButton";
 
 export default function LotteryOpenNotEntered() {
@@ -14,7 +12,6 @@ export default function LotteryOpenNotEntered() {
   const [memberDetails, setMemberDetails] = useState<MemberDetailsData | null>(
     null
   );
-  const [isLoading, setIsLoading] = useState(false);
 
   return (
     <>

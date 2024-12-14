@@ -5,7 +5,7 @@ import { Button } from "@nextui-org/react";
 import { apiDelete } from "@/app/_components/api";
 import { useProject } from "@/app/_components/SessionContext";
 import toast from "react-hot-toast";
-import MemberDetails from "./MemberDetails";
+import MemberDetails from "./helpers/MemberDetails";
 
 export default function LotteryOpenEntered() {
   const { project, updateProjectSimple } = useProject();

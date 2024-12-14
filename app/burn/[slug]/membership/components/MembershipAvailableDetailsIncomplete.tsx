@@ -2,8 +2,8 @@
 
 import React, { useState } from "react";
 import { useProject } from "@/app/_components/SessionContext";
-import MemberDetailsInput from "./MemberDetailsInput";
-import { MemberDetailsData } from "./MemberDetails";
+import MemberDetailsInput from "./helpers/MemberDetailsInput";
+import { MemberDetailsData } from "./helpers/MemberDetails";
 import { apiPatch } from "@/app/_components/api";
 import ActionButton from "@/app/_components/ActionButton";
 

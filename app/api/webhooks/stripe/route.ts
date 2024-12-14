@@ -1,7 +1,7 @@
 import Stripe from "stripe";
 import { NextResponse } from "next/server";
 import { createClient } from "@/utils/supabase/server";
-import { BurnConfig } from "@/utils/types";
+import { BurnConfig, BurnMembershipPurchaseRight } from "@/utils/types";
 import { query } from "@/app/api/_common/endpoints";
 import { stripeCurrenciesWithoutDecimals } from "@/app/api/_common/stripe";
 
@@ -62,15 +62,20 @@ export async function POST(req: Request) {
       }
 
       // make sure the membership purchase right exists and is not expired
-      const membershipPurchaseRight = await query(() =>
-        supabase
-          .from("burn_membership_purchase_rights")
-          .select("*")
-          .eq("id", membershipPurchaseRightId)
-          .eq("project_id", projectId)
-          .gt("expires_at", new Date().toISOString())
-          .single()
+      const membershipPurchaseRight: BurnMembershipPurchaseRight = await query(
+        () =>
+          supabase
+            .from("burn_membership_purchase_rights")
+            .select("*")
+            .eq("id", membershipPurchaseRightId)
+            .eq("project_id", projectId)
+            .gt("expires_at", new Date().toISOString())
+            .single()
       );
+
+      if (membershipPurchaseRight.details_modifiable) {
+        throw new Error("Membership purchase right must not modifiable");
+      }
 
       // mark the membership purchase right as expired
       await query(() =>
@@ -86,7 +91,7 @@ export async function POST(req: Request) {
       await query(() =>
         supabase.from("burn_memberships").insert({
           project_id: projectId,
-          owner_id: membershipPurchaseRight.owner_id,
+          owner_id: (membershipPurchaseRight as any).owner_id,
           first_name: membershipPurchaseRight.first_name,
           last_name: membershipPurchaseRight.last_name,
           birthdate: membershipPurchaseRight.birthdate,

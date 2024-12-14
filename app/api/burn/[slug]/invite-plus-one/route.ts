@@ -1,7 +1,10 @@
 import { requestWithProject, query } from "@/app/api/_common/endpoints";
 import { s } from "ajv-ts";
 import { BurnRole, BurnStage } from "@/utils/types";
-import { getProfile } from "@/app/api/_common/profile";
+import {
+  getProfileByEmail,
+  validateNewMembershipEligibility,
+} from "@/app/api/_common/profile";
 
 const InvitePlusOneRequestSchema = s.object({
   email: s.string(),
@@ -17,32 +20,11 @@ export const POST = requestWithProject<
       );
     }
 
-    const recipient = await query(() =>
-      supabase.from("profiles").select("*").eq("email", body.email)
+    const recipientProfile = await getProfileByEmail(supabase, body.email);
+    const recipientProject = validateNewMembershipEligibility(
+      recipientProfile,
+      project!
     );
-
-    if (recipient.length === 0) {
-      throw new Error("Recipient not found");
-    }
-
-    const recipientProfile = await getProfile(supabase, recipient[0].id);
-    const recipientProject = recipientProfile.projects.find(
-      (p) => p.id === project!.id
-    );
-
-    if (!recipientProject) {
-      throw new Error(`Recipient needs to join "${project?.name}" first`);
-    }
-
-    if (recipientProject.membership_purchase_right) {
-      throw new Error(
-        "Recipient already has an available membership to purchase"
-      );
-    }
-
-    if (recipientProject.membership) {
-      throw new Error("Recipient already has a membership");
-    }
 
     // create a membership purchase right for the recipient
     await query(() =>
