@@ -7,6 +7,7 @@ const UpdateBurnConfigRequestSchema = s.object({
   open_sale_starting_at: s.string(),
   open_sale_reservation_duration: s.number(),
   transfer_reservation_duration: s.number(),
+  last_possible_transfer_at: s.string(),
   max_memberships: s.number(),
   membership_price_currency: s.string(),
   membership_pricing_type: s.string(),

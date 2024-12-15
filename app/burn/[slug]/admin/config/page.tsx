@@ -24,6 +24,9 @@ export default function ConfigPage() {
     useState(
       (project!.burn_config.transfer_reservation_duration ?? 0).toString()
     );
+  const [lastPossibleTransferAt, setLastPossibleTransferAt] = useState(
+    project!.burn_config.last_possible_transfer_at ?? ""
+  );
   const [maxMemberships, setMaxMemberships] = useState(
     (project!.burn_config.max_memberships ?? 0).toString()
   );
@@ -82,6 +85,7 @@ export default function ConfigPage() {
       open_sale_starting_at: new Date(openSaleStartingAt).toISOString(),
       open_sale_reservation_duration: parseInt(openSaleReservationDuration),
       transfer_reservation_duration: parseInt(transferReservationDuration),
+      last_possible_transfer_at: new Date(lastPossibleTransferAt).toISOString(),
       max_memberships: parseInt(maxMemberships),
       membership_price_currency: membershipPriceCurrency,
       membership_pricing_type: membershipPricingType,
@@ -124,6 +128,11 @@ export default function ConfigPage() {
           label="transfer_reservation_duration"
           value={transferReservationDuration}
           onValueChange={setTransferReservationDuration}
+        />
+        <Input
+          label="last_possible_transfer_at"
+          value={lastPossibleTransferAt}
+          onValueChange={setLastPossibleTransferAt}
         />
         <Input
           label="max_memberships"

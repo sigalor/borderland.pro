@@ -5,8 +5,6 @@ import { Link } from "@nextui-org/link";
 import Heading from "@/app/_components/Heading";
 
 export default function InvitePlusOne() {
-  const [email, setEmail] = useState("");
-
   return (
     <>
       <Heading className="mt-12">Support</Heading>

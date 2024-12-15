@@ -45,6 +45,7 @@ create table burn_config (
   open_sale_starting_at timestamp with time zone, -- this determines the 'reserved_until' field for memberships obtained in the lottery
   open_sale_reservation_duration bigint, -- in seconds, determines how long the user has time to answer the questions and enter payment details
   transfer_reservation_duration bigint, -- in seconds, determines how long the user has time to purchase a membership after a transfer is made
+  last_possible_transfer_at timestamp with time zone,
   max_memberships bigint, -- the maximum number of memberships that can be sold in the open sale
   membership_price_currency text not null,
   membership_pricing_type burn_membership_pricing_type not null,

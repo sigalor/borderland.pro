@@ -19,6 +19,7 @@ export type BurnConfig = {
   open_sale_starting_at: string;
   open_sale_reservation_duration: number;
   transfer_reservation_duration: number;
+  last_possible_transfer_at: string;
   max_memberships: number;
   membership_price_currency: string;
   membership_pricing_type: BurnMembershipPricing;
@@ -60,7 +61,8 @@ export type BurnMembership = {
   birthdate: string;
   price: number;
   price_currency: string;
-  checked_in_at: string;
+  stripe_payment_intent_id?: string;
+  checked_in_at?: string;
 };
 
 export type Project = {

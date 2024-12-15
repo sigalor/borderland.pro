@@ -32,10 +32,10 @@ export default function InvitePlusOne() {
               project.burn_config.open_sale_starting_at
             ).toLocaleString()}
           </b>
-          .
+          . The recipient must be registered on this platform.
         </p>
         <Input
-          label="Email with which the intended recipient registered on this platform"
+          label="Email address of the intended recipient"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />

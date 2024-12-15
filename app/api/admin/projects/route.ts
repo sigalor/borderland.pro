@@ -25,9 +25,14 @@ export const POST = requestWithAuthAdmin<
     supabase.from("burn_config").insert({
       project_id: project.id,
       current_stage: BurnStage.LotteryOpen,
-      open_sale_starting_at: new Date().toISOString(),
+      open_sale_starting_at: new Date(
+        new Date().getTime() + 1000 * 60 * 60 * 24
+      ).toISOString(),
       open_sale_reservation_duration: 60 * 30, // 30 minutes
       transfer_reservation_duration: 60 * 60 * 24 * 7, // 7 days
+      last_possible_transfer_at: new Date(
+        new Date().getTime() + 1000 * 60 * 60 * 24 * 7
+      ).toISOString(),
       max_memberships: 4603,
       membership_price_currency: "SEK",
       membership_pricing_type: "tiered-3",

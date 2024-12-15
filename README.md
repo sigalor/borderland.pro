@@ -5,10 +5,9 @@ Hosting a burn for everybody.
 ## TODO
 
 - adding children
-- transfer (also add last transfer date to schema)
 - email notifications
 - membership scanner
-- refund membership when revoked by admin
+- questionnaire before purchasing membership
 
 ## Co-creation
 
