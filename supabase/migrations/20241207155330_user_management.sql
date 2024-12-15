@@ -85,6 +85,7 @@ create table burn_membership_purchase_rights (
   birthdate text,
   is_low_income boolean default false,
   details_modifiable boolean default false,
+  metadata jsonb,
   check(birthdate is null or birthdate ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
 );
 
@@ -100,6 +101,7 @@ create table burn_memberships (
   price float not null,
   price_currency text not null,
   checked_in_at timestamp with time zone, -- this is set when the user checks in at the event
+  metadata jsonb,
   unique (project_id, first_name, last_name, birthdate),
   check (birthdate ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$'),
   check (price_currency ~ '^[A-Z]{3}$')

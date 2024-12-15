@@ -51,6 +51,7 @@ export type BurnMembershipPurchaseRight = {
   birthdate: string;
   is_low_income: boolean;
   details_modifiable: boolean;
+  metadata?: any;
 };
 
 export type BurnMembership = {
@@ -63,6 +64,7 @@ export type BurnMembership = {
   price_currency: string;
   stripe_payment_intent_id?: string;
   checked_in_at?: string;
+  metadata?: any;
 };
 
 export type Project = {

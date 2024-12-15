@@ -8,6 +8,7 @@ import { stripeCurrenciesWithoutDecimals } from "@/app/api/_common/stripe";
 const PurchaseMembershipRequestSchema = s.object({
   originUrl: s.string(),
   tier: s.number(),
+  metadata: s.object(),
 });
 
 export const POST = requestWithProject<
@@ -111,6 +112,15 @@ export const POST = requestWithProject<
         })
         .eq("id", project.id);
     }
+
+    await query(() =>
+      supabase
+        .from("burn_membership_purchase_rights")
+        .update({
+          metadata: body.metadata,
+        })
+        .eq("id", project.membership_purchase_right!.id)
+    );
 
     return { url: stripeSession.url };
   },

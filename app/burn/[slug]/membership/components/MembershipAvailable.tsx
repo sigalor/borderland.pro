@@ -9,13 +9,18 @@ import { formatMoney } from "@/app/_components/utils";
 import { apiPost, apiGet } from "@/app/_components/api";
 import { useSearchParams, useRouter } from "next/navigation";
 import InvitePlusOne from "./InvitePlusOne";
+import ActionButton from "@/app/_components/ActionButton";
+import {
+  useBurnerQuestionnairePrompt,
+  BurnerQuestionnaireResult,
+} from "./helpers/useBurnerQuestionnairePrompt";
 
 export default function MembershipAvailable() {
   const { project, reloadProfile } = useProject();
-  const [isLoading, setIsLoading] = useState<boolean | number>(false);
   const [isPolling, setIsPolling] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const burnerQuestionnaire = useBurnerQuestionnairePrompt();
 
   useEffect(() => {
     if (searchParams.get("success") === "true") {
@@ -55,17 +60,19 @@ export default function MembershipAvailable() {
     }
   }, [searchParams, project?.slug, reloadProfile, router]);
 
-  const purchaseMembership = async (tier: number) => {
-    setIsLoading(tier);
-    try {
-      const { url } = await apiPost(
-        `/burn/${project?.slug}/purchase-membership`,
-        { tier, originUrl: window.location.href }
-      );
-      window.location.href = url;
-    } finally {
-      setIsLoading(false);
-    }
+  const purchaseMembership = async (
+    tier: number,
+    burnerQuestionnaireResult?: BurnerQuestionnaireResult
+  ) => {
+    const { url } = await apiPost(
+      `/burn/${project?.slug}/purchase-membership`,
+      {
+        tier,
+        originUrl: window.location.href,
+        metadata: burnerQuestionnaireResult,
+      }
+    );
+    window.location.href = url;
   };
 
   return (
@@ -97,40 +104,59 @@ export default function MembershipAvailable() {
           BurnMembershipPricing.Tiered3 ? (
           <div className="flex flex-col gap-2">
             {project.membership_purchase_right?.is_low_income ? (
-              <Button
-                onPress={() => purchaseMembership(1)}
-                isLoading={isLoading === 1}
-              >
-                Purchase low-income membership (
-                {formatMoney(
-                  project?.burn_config.membership_price_tier_1,
-                  project?.burn_config.membership_price_currency
-                )}
-                )
-              </Button>
+              <ActionButton
+                action={{
+                  key: "purchase-membership-tier-1",
+                  label: `Purchase low-income membership (${formatMoney(
+                    project?.burn_config.membership_price_tier_1,
+                    project?.burn_config.membership_price_currency
+                  )})`,
+                  onClick: {
+                    prompt: burnerQuestionnaire,
+                    handler: (_, promptData) =>
+                      purchaseMembership(
+                        1,
+                        promptData as BurnerQuestionnaireResult
+                      ),
+                  },
+                }}
+              />
             ) : null}
-            <Button
-              onPress={() => purchaseMembership(2)}
-              isLoading={isLoading === 2}
-            >
-              Purchase regular-income membership (
-              {formatMoney(
-                project?.burn_config.membership_price_tier_2,
-                project?.burn_config.membership_price_currency
-              )}
-              )
-            </Button>
-            <Button
-              onPress={() => purchaseMembership(3)}
-              isLoading={isLoading === 3}
-            >
-              Purchase high-income membership (
-              {formatMoney(
-                project?.burn_config.membership_price_tier_3,
-                project?.burn_config.membership_price_currency
-              )}
-              )
-            </Button>
+
+            <ActionButton
+              action={{
+                key: "purchase-membership-tier-2",
+                label: `Purchase regular-income membership (${formatMoney(
+                  project?.burn_config.membership_price_tier_2,
+                  project?.burn_config.membership_price_currency
+                )})`,
+                onClick: {
+                  prompt: burnerQuestionnaire,
+                  handler: (_, promptData) =>
+                    purchaseMembership(
+                      2,
+                      promptData as BurnerQuestionnaireResult
+                    ),
+                },
+              }}
+            />
+            <ActionButton
+              action={{
+                key: "purchase-membership-tier-3",
+                label: `Purchase high-income membership (${formatMoney(
+                  project?.burn_config.membership_price_tier_3,
+                  project?.burn_config.membership_price_currency
+                )})`,
+                onClick: {
+                  prompt: burnerQuestionnaire,
+                  handler: (_, promptData) =>
+                    purchaseMembership(
+                      3,
+                      promptData as BurnerQuestionnaireResult
+                    ),
+                },
+              }}
+            />
           </div>
         ) : null}
       </div>

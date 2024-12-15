@@ -102,6 +102,7 @@ export async function POST(req: Request) {
             ? session.amount_total
             : session.amount_total! / 100,
           price_currency: session.currency!.toUpperCase(),
+          metadata: membershipPurchaseRight.metadata,
         })
       );
 

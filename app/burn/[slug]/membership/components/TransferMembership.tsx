@@ -40,8 +40,8 @@ export default function TransferMembership() {
           )}
           ) will be automatically refunded onto the credit card you used to
           purchase the membership; you therefore don't need to exchange any
-          money with the recipient. Please notify us in case you haven't
-          received the refund within 10 days.
+          money with the recipient. Please notify us in case you don't receive
+          the refund within 10 days.
         </p>
         <p>
           The recipient must purchase the membership within{" "}
@@ -71,7 +71,7 @@ export default function TransferMembership() {
                 email,
               });
               await reloadProfile();
-              toast.success("Membership transferred!");
+              toast.success("Membership successfully transferred!");
             },
           }}
         />
