@@ -39,14 +39,16 @@ export default function TransferMembership() {
             project!.membership!.price_currency
           )}
           ) will be automatically refunded onto the credit card you used to
-          purchase the membership; you therefore don't need to exchange any
-          money with the recipient. Please notify us in case you don't receive
-          the refund within 10 days.
+          purchase your membership; you therefore don't need to exchange any
+          money with the recipient. Please notify the membership team through
+          the email address mentioned below in case you don't receive the refund
+          within 10 days.
         </p>
         <p>
           The recipient must purchase the membership within{" "}
           {project?.burn_config.transfer_reservation_duration! / (60 * 60 * 24)}{" "}
-          days, otherwise it will be released to the public in the open sale.
+          days after the transfer, otherwise it will be released to the public
+          in the open sale.
         </p>
         {project?.membership?.price ===
         project?.burn_config.membership_price_tier_1 ? (
