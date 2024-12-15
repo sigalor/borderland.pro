@@ -3,9 +3,9 @@
 import React, { useEffect, useState } from "react";
 import { Input, Checkbox } from "@nextui-org/react";
 import { calculateAge } from "@/app/_components/utils";
-import { useProject } from "@/app/_components/SessionContext";
 import { usePrompt } from "@/app/_components/PromptContext";
 import { MemberDetailsData } from "./MemberDetails";
+import { useLowIncomeQuestionnairePrompt } from "./useLowIncomeQuestionnaire";
 
 export default function MemberDetailsInput({
   value,
@@ -21,11 +21,11 @@ export default function MemberDetailsInput({
   withLowIncomePrompt?: boolean;
 }) {
   const prompt = usePrompt();
-  const { project, updateProjectSimple } = useProject();
   const [firstName, setFirstName] = useState(value?.first_name ?? "");
   const [lastName, setLastName] = useState(value?.last_name ?? "");
   const [birthdate, setBirthdate] = useState(value?.birthdate ?? "");
   const [isLowIncome, setIsLowIncome] = useState(value?.is_low_income ?? false);
+  const lowIncomeQuestionnaire = useLowIncomeQuestionnairePrompt();
 
   const isBirthdateWellFormatted = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(
     birthdate
@@ -78,10 +78,8 @@ export default function MemberDetailsInput({
           onValueChange={async (newIsLowIncome) => {
             if (newIsLowIncome) {
               if (withLowIncomePrompt) {
-                const resp = await prompt(
-                  "Please answer a few questions to determine your eligibility for low income membership."
-                );
-                if (resp) {
+                const isEligible = await lowIncomeQuestionnaire();
+                if (isEligible) {
                   setIsLowIncome(true);
                 }
               } else {

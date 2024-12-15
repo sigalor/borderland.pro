@@ -4,10 +4,12 @@ Hosting a burn for everybody.
 
 ## TODO
 
+- low-income questionnaire
+- burner questionnaire
+
 - adding children
 - email notifications
 - membership scanner
-- questionnaire before purchasing membership
 
 ## Co-creation
 
