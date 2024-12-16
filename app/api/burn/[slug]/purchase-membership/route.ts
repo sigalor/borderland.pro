@@ -96,6 +96,7 @@ export const POST = requestWithProject<
       },
     });
 
+    console.log(project.burn_config);
     if (!project.burn_config.stripe_webhook_secret) {
       const originUrl = new URL(body.originUrl);
       const whEndpoint = await stripe.webhookEndpoints.create({
@@ -105,6 +106,7 @@ export const POST = requestWithProject<
           project_id: project.id,
         },
       });
+      console.log(whEndpoint);
       await supabase
         .from("burn_projects")
         .update({
