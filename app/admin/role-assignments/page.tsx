@@ -37,7 +37,7 @@ export default function RoleAssignmentsPage() {
                 {
                   key: "roleId",
                   label: "Role",
-                  options: fullData.roles.map((r: any) => ({
+                  options: fullData!.roles.map((r: any) => ({
                     id: r.id,
                     label: r.projects.name + " - " + r.name,
                   })),

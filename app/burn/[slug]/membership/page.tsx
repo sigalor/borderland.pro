@@ -14,7 +14,7 @@ import Member from "./components/Member";
 import Support from "./components/Support";
 import OpenSale from "./components/OpenSale";
 
-export enum MembershipStatus {
+enum MembershipStatus {
   LotteryOpenNotEntered,
   LotteryOpenEntered,
   LotteryClosedNotEntered,
