@@ -5,35 +5,41 @@ import { useProject } from "@/app/_components/SessionContext";
 import Heading from "@/app/_components/Heading";
 import { Card, CardBody } from "@nextui-org/react";
 
-const timelineEvents = [
-  {
-    date: "TBD",
-    title: "Membership lottery signup opens",
-  },
-  {
-    date: "TBD",
-    title: "Lottery is drawn and winners can buy their membership",
-  },
-  {
-    date: "TBD",
-    title: "Open sale opens for those who entered the lottery but didn't win",
-  },
-  {
-    date: "TBD",
-    title: "Open sale and transfers open for everyone",
-  },
-  {
-    date: "TBD",
-    title: "Open sale and transfers close",
-  },
-  {
-    date: "July 21 – July 27, 2025",
-    title: "Burn",
-  },
-];
-
 export default function ProjectPage() {
   const { project } = useProject();
+
+  const timelineEvents = [
+    {
+      date: "TBD",
+      title: "Membership lottery signup opens",
+    },
+    {
+      date: "TBD",
+      title: "Lottery is drawn and winners can buy their membership",
+    },
+    {
+      date: new Date(
+        project?.burn_config.open_sale_lottery_entrants_only_starting_at!
+      ).toLocaleString(),
+      title: "Open sale opens for those who entered the lottery but didn't win",
+    },
+    {
+      date: new Date(
+        project?.burn_config.open_sale_general_starting_at!
+      ).toLocaleString(),
+      title: "Open sale and transfers open for everyone",
+    },
+    {
+      date: new Date(
+        project?.burn_config.last_possible_transfer_at!
+      ).toLocaleString(),
+      title: "Open sale and transfers close",
+    },
+    {
+      date: "July 21 – July 27, 2025",
+      title: "Burn",
+    },
+  ];
 
   return (
     <div>
