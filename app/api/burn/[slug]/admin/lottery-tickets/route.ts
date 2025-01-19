@@ -13,5 +13,5 @@ export const GET = requestWithProject(
     };
   },
   undefined,
-  BurnRole.Admin
+  BurnRole.MembershipManager
 );

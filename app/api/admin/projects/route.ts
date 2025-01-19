@@ -44,7 +44,12 @@ export const POST = requestWithAuthAdmin<
     })
   );
 
-  const initialRoles = [BurnRole.Admin, BurnRole.Participant];
+  const initialRoles = [
+    BurnRole.Admin,
+    BurnRole.Participant,
+    BurnRole.MembershipManager,
+    BurnRole.MembershipScanner,
+  ];
 
   for (const role of initialRoles) {
     const newRole = await query(() =>

@@ -103,5 +103,5 @@ export const POST = requestWithProject(
     };
   },
   undefined,
-  BurnRole.Admin
+  BurnRole.MembershipManager
 );

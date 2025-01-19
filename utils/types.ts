@@ -7,6 +7,8 @@ export enum BurnStage {
 export enum BurnRole {
   Admin = "admin",
   Participant = "participant",
+  MembershipManager = "membership-manager",
+  MembershipScanner = "membership-scanner",
 }
 
 export enum BurnMembershipPricing {

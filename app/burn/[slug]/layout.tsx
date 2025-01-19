@@ -5,7 +5,6 @@ import { Sidebar } from "@/app/_components/Sidebar";
 import {
   HomeOutlined,
   IdcardOutlined,
-  RocketOutlined,
   SettingOutlined,
   QrcodeOutlined,
   TeamOutlined,
@@ -37,11 +36,6 @@ export default function ProjectLayout({
             icon: <HomeOutlined />,
           },
           {
-            label: "Timeline",
-            path: `/burn/${project?.slug}/timeline`,
-            icon: <RocketOutlined />,
-          },
-          {
             label:
               project.membership || project.membership_purchase_right
                 ? "Your membership"
@@ -51,16 +45,23 @@ export default function ProjectLayout({
             path: `/burn/${project?.slug}/membership`,
             icon: <IdcardOutlined />,
           },
-          { separator: true },
 
-          {
-            label: "Membership scanner",
-            path: `/burn/${project?.slug}/scanner`,
-            icon: <QrcodeOutlined />,
-          },
-          ...(project.roles.includes(BurnRole.Admin)
+          ...(project.roles.includes(BurnRole.MembershipScanner)
             ? ([
                 { separator: true },
+                { sectionTitle: "On-site" },
+                {
+                  label: "Membership scanner",
+                  path: `/burn/${project?.slug}/scanner`,
+                  icon: <QrcodeOutlined />,
+                },
+              ] as any)
+            : []),
+
+          ...(project.roles.includes(BurnRole.MembershipManager)
+            ? ([
+                { separator: true },
+                { sectionTitle: "Membership management" },
                 project.burn_config.current_stage !== BurnStage.OpenSale
                   ? {
                       label: "Lottery tickets",
@@ -78,6 +79,13 @@ export default function ProjectLayout({
                   path: `/burn/${project?.slug}/admin/memberships`,
                   icon: <TeamOutlined />,
                 },
+              ] as any)
+            : []),
+
+          ...(project.roles.includes(BurnRole.Admin)
+            ? ([
+                { separator: true },
+                { sectionTitle: "Administration" },
                 {
                   label: "Configuration",
                   path: `/burn/${project?.slug}/admin/config`,

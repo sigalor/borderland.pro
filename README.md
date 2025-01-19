@@ -13,7 +13,6 @@ Hosting a burn for everybody.
 
 - store low-income questionnaire results in server
 - separate button to leave the lottery
-- more levels of admin
 - only people with a lottery ticket should be able to use the open sale at first (two stages: open-sale-only-lottery-enterers, open-sale-general)
 - adding children
 - email notifications (via existing Mailgun)

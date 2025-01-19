@@ -19,7 +19,7 @@ export const GET = requestWithProject(
     };
   },
   undefined,
-  BurnRole.Admin
+  BurnRole.MembershipManager
 );
 
 const IssueMembershipPurchaseRightRequestSchema = s.object({
@@ -47,5 +47,5 @@ export const POST = requestWithProject<
     );
   },
   IssueMembershipPurchaseRightRequestSchema,
-  BurnRole.Admin
+  BurnRole.MembershipManager
 );

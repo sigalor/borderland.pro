@@ -10,7 +10,7 @@ interface SidebarRoute {
 }
 
 interface SidebarProps {
-  routes: (SidebarRoute | { separator: true })[];
+  routes: (SidebarRoute | { separator: true } | { sectionTitle: string })[];
 }
 
 export function Sidebar({ routes }: SidebarProps) {
@@ -33,6 +33,13 @@ export function Sidebar({ routes }: SidebarProps) {
               className="h-[1px] w-full my-2"
               style={{ backgroundColor: "#E0E0E0" }}
             />
+          ) : route.sectionTitle ? (
+            <div
+              key={i}
+              className="text-[10px] text-default-500 mt-1 ml-4 uppercase"
+            >
+              {route.sectionTitle}
+            </div>
           ) : (
             <Button
               key={route.path}

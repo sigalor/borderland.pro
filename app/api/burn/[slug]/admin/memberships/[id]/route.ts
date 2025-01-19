@@ -22,5 +22,5 @@ export const DELETE = requestWithProject(
     );
   },
   undefined,
-  BurnRole.Admin
+  BurnRole.MembershipManager
 );
