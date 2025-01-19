@@ -7,6 +7,15 @@ import { useProject } from "@/app/_components/SessionContext";
 import { BurnStage, BurnMembershipPricing } from "@/utils/types";
 import toast from "react-hot-toast";
 
+function isJson(value: string) {
+  try {
+    JSON.parse(value);
+    return true;
+  } catch (e) {
+    return false;
+  }
+}
+
 export default function ConfigPage() {
   const { project, updateBurnConfig } = useProject();
   const [isLoading, setIsLoading] = useState(false);
@@ -57,6 +66,9 @@ export default function ConfigPage() {
   const [shareMembershipsLowIncome, setShareMembershipsLowIncome] = useState(
     (project!.burn_config.share_memberships_low_income ?? 0).toString()
   );
+  const [membershipAddons, setMembershipAddons] = useState(
+    JSON.stringify(project!.burn_config.membership_addons ?? [])
+  );
   const [stripeSecretApiKey, setStripeSecretApiKey] = useState(
     project!.burn_config.stripe_secret_api_key ?? ""
   );
@@ -83,7 +95,8 @@ export default function ConfigPage() {
     parseInt(shareMembershipsLottery) <= 100 &&
     isNumber(shareMembershipsLowIncome) &&
     parseInt(shareMembershipsLowIncome) >= 0 &&
-    parseInt(shareMembershipsLowIncome) <= 100;
+    parseInt(shareMembershipsLowIncome) <= 100 &&
+    isJson(membershipAddons);
 
   const handleSave = async () => {
     setIsLoading(true);
@@ -106,6 +119,7 @@ export default function ConfigPage() {
       membership_price_tier_3: parseFloat(membershipPriceTier3),
       share_memberships_lottery: parseInt(shareMembershipsLottery),
       share_memberships_low_income: parseInt(shareMembershipsLowIncome),
+      membership_addons: JSON.parse(membershipAddons),
       stripe_secret_api_key: stripeSecretApiKey,
       stripe_webhook_secret: stripeWebhookSecret,
     };
@@ -192,6 +206,11 @@ export default function ConfigPage() {
           label="share_memberships_low_income"
           value={shareMembershipsLowIncome}
           onValueChange={setShareMembershipsLowIncome}
+        />
+        <Input
+          label="membership_addons"
+          value={membershipAddons}
+          onValueChange={setMembershipAddons}
         />
         <Input
           label="stripe_secret_api_key"

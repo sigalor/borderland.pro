@@ -1,3 +1,5 @@
+create extension pg_jsonschema;
+
 create table profiles (
   id uuid references auth.users not null primary key,
   registered_at timestamp with time zone default now(),
@@ -55,6 +57,7 @@ create table burn_config (
   membership_price_tier_3 float,
   share_memberships_lottery integer, -- the percentage of memberships that will be reserved for lottery winners (i.e. when the lottery is drawn, max_memberships*share_memberships_lottery/100 will be chosen, max_memberships*share_memberships_low_income/100 of which are low-income)
   share_memberships_low_income integer, -- the percentage of memberships that will be reserved for low-income individuals (tier 1)
+  membership_addons jsonb default '[]' not null,
   stripe_secret_api_key text,
   stripe_webhook_secret text,
   check (membership_price_currency ~ '^[A-Z]{3}$')

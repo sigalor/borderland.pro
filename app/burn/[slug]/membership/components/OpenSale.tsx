@@ -26,9 +26,8 @@ export default function OpenSale() {
   useEffect(() => {
     if (initialRender.current) {
       initialRender.current = false;
-      return;
+      updateAvailableMemberships();
     }
-    updateAvailableMemberships();
   }, []);
 
   if (isLoading) {

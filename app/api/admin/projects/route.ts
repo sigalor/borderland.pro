@@ -44,6 +44,14 @@ export const POST = requestWithAuthAdmin<
       membership_price_tier_3: 2800,
       share_memberships_lottery: 50,
       share_memberships_low_income: 10,
+      membership_addons: [
+        {
+          id: "alversjo-membership",
+          name: "Alversjö membership",
+          link: "https://opencollective.com/alversjo",
+          price: 600,
+        },
+      ],
     })
   );
 

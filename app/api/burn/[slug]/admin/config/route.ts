@@ -17,6 +17,7 @@ const UpdateBurnConfigRequestSchema = s.object({
   membership_price_tier_3: s.number(),
   share_memberships_lottery: s.number(),
   share_memberships_low_income: s.number(),
+  membership_addons: s.array(s.object()),
   stripe_secret_api_key: s.string(),
   stripe_webhook_secret: s.string(),
 });

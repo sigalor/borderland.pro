@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Button, Spinner } from "@nextui-org/react";
+import { Checkbox, Spinner } from "@nextui-org/react";
 import { useProject } from "@/app/_components/SessionContext";
 import MemberDetailsWithHeading from "./helpers/MemberDetailsWithHeading";
 import { BurnMembershipPricing } from "@/utils/types";
@@ -10,6 +10,7 @@ import { apiPost, apiGet } from "@/app/_components/api";
 import { useSearchParams, useRouter } from "next/navigation";
 import InvitePlusOne from "./InvitePlusOne";
 import ActionButton from "@/app/_components/ActionButton";
+import Link from "next/link";
 import {
   useBurnerQuestionnairePrompt,
   BurnerQuestionnaireResult,
@@ -21,6 +22,9 @@ export default function MembershipAvailable() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const burnerQuestionnaire = useBurnerQuestionnairePrompt();
+  const [enabledAddons, setEnabledAddons] = useState<string[]>(
+    project?.membership_purchase_right?.metadata?.enabled_addons ?? []
+  );
 
   useEffect(() => {
     if (searchParams.get("success") === "true") {
@@ -70,12 +74,22 @@ export default function MembershipAvailable() {
         tier,
         originUrl: window.location.href,
         metadata: {
+          enabled_addons: enabledAddons,
           burner_questionnaire_result: burnerQuestionnaireResult,
         },
       }
     );
     window.location.href = url;
   };
+
+  const enabledAddonsSuffix = enabledAddons
+    .map((addon) => {
+      const addonDef = project?.burn_config.membership_addons.find(
+        (a) => a.id === addon
+      )!;
+      return ` + ${addonDef.name} (${formatMoney(addonDef.price, project?.burn_config.membership_price_currency!)})`;
+    })
+    .join("");
 
   return (
     <>
@@ -101,6 +115,52 @@ export default function MembershipAvailable() {
           </>
         )}
 
+        {project?.burn_config.membership_addons?.length! > 0 ? (
+          <div className="flex flex-col gap-2">
+            <p>
+              You can also purchase the following optional add-ons for your
+              membership:
+            </p>
+            {project?.burn_config.membership_addons.map((addon) => (
+              <div key={addon.id} className="flex flex-row gap-2 ml-10">
+                <div className="flex flex-col items-center justify-center">
+                  <Checkbox
+                    isSelected={enabledAddons.includes(addon.id)}
+                    onValueChange={(value: boolean) => {
+                      setEnabledAddons(
+                        value
+                          ? [...enabledAddons, addon.id]
+                          : enabledAddons.filter((id) => id !== addon.id)
+                      );
+                    }}
+                  />
+                </div>
+                <div className="flex flex-col gap-0">
+                  {addon.name} (+{" "}
+                  {formatMoney(
+                    addon.price,
+                    project?.burn_config.membership_price_currency
+                  )}
+                  )
+                  <br />
+                  <span className="text-xs">
+                    see{" "}
+                    <Link
+                      href={addon.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-primary underline"
+                    >
+                      here
+                    </Link>{" "}
+                    for more information
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : null}
+
         {!isPolling &&
         project?.burn_config.membership_pricing_type ===
           BurnMembershipPricing.Tiered3 ? (
@@ -112,7 +172,7 @@ export default function MembershipAvailable() {
                   label: `Purchase low-income membership (${formatMoney(
                     project?.burn_config.membership_price_tier_1,
                     project?.burn_config.membership_price_currency
-                  )})`,
+                  )})${enabledAddonsSuffix}`,
                   onClick: {
                     prompt: burnerQuestionnaire,
                     handler: (_, promptData) =>
@@ -131,7 +191,7 @@ export default function MembershipAvailable() {
                 label: `Purchase regular-income membership (${formatMoney(
                   project?.burn_config.membership_price_tier_2,
                   project?.burn_config.membership_price_currency
-                )})`,
+                )})${enabledAddonsSuffix}`,
                 onClick: {
                   prompt: burnerQuestionnaire,
                   handler: (_, promptData) =>
@@ -148,7 +208,7 @@ export default function MembershipAvailable() {
                 label: `Purchase high-income membership (${formatMoney(
                   project?.burn_config.membership_price_tier_3,
                   project?.burn_config.membership_price_currency
-                )})`,
+                )})${enabledAddonsSuffix}`,
                 onClick: {
                   prompt: burnerQuestionnaire,
                   handler: (_, promptData) =>

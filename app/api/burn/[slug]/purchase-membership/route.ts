@@ -1,6 +1,6 @@
 import { requestWithProject, query } from "@/app/api/_common/endpoints";
 import { s } from "ajv-ts";
-import { BurnRole } from "@/utils/types";
+import { BurnRole, BurnMembershipAddon } from "@/utils/types";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { stripeCurrenciesWithoutDecimals } from "@/app/api/_common/stripe";
@@ -63,6 +63,18 @@ export const POST = requestWithProject<
       project.burn_config.membership_price_tier_2,
       project.burn_config.membership_price_tier_3,
     ][body.tier - 1];
+
+    const enabledAddons: BurnMembershipAddon[] = (
+      (body.metadata as any).enabled_addons ?? []
+    )
+      .map((id: string) =>
+        project.burn_config.membership_addons.find((a) => a.id === id)
+      )
+      .filter((a: any) => !!a);
+    for (const addon of enabledAddons) {
+      stripeUnitAmount += addon.price;
+    }
+
     if (
       !stripeCurrenciesWithoutDecimals.includes(
         project.burn_config.membership_price_currency
@@ -81,7 +93,10 @@ export const POST = requestWithProject<
             currency:
               project.burn_config.membership_price_currency.toLowerCase(),
             product_data: {
-              name: "Membership for " + project.name,
+              name:
+                "Membership for " +
+                project.name +
+                enabledAddons.map((a) => " + " + a.name).join(""),
             },
             unit_amount: stripeUnitAmount,
           },

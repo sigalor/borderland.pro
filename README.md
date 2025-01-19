@@ -35,20 +35,16 @@ Hosting a burn for everybody.
 
 ### Features
 
-- store low-income questionnaire results in server
 - adding children
 - email notifications (via existing Mailgun)
   - transactional emails (lottery sign-up, etc.)
   - emails when lottery is drawn
 - membership scanner
-- Alversjö membership
 - unit tests
 
 ### Fixes
 
 - make fully mobile-ready
-- fix that number of memberships in open sale is not loaded immediately
-- people shouldn't need to reload the page
 
 ### Legal
 
