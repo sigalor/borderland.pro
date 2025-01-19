@@ -4,6 +4,7 @@ import {
   SettingOutlined,
   LogoutOutlined,
   GithubOutlined,
+  SafetyCertificateOutlined,
 } from "@ant-design/icons";
 import AddProjectButton from "./AddProjectButton";
 import Image from "next/image";
@@ -79,6 +80,18 @@ export default function ProjectSwitcher() {
           }
         >
           <GithubOutlined style={{ fontSize: "20px" }} />
+        </Button>
+      </Tooltip>
+
+      <Tooltip content="Privacy policy" placement="right">
+        <Button
+          isIconOnly
+          radius="full"
+          variant="light"
+          className="bg-default-50 hover:bg-default-200"
+          onPress={() => window.open("/privacy", "_blank")}
+        >
+          <SafetyCertificateOutlined style={{ fontSize: "20px" }} />
         </Button>
       </Tooltip>
 

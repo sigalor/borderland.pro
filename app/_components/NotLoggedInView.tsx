@@ -5,6 +5,7 @@ import { Modal, ModalContent, ModalBody, Button } from "@nextui-org/react";
 import Auth from "./auth/Auth";
 import { useSession } from "./SessionContext";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Home() {
   const { session } = useSession();
@@ -41,6 +42,9 @@ export default function Home() {
           </ModalBody>
         </ModalContent>
       </Modal>
+      <div className="absolute bottom-0 right-0 p-4 text-xs">
+        <Link href="/privacy">Privacy policy</Link>
+      </div>
     </div>
   );
 }

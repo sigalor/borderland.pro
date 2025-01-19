@@ -40,15 +40,10 @@ Hosting a burn for everybody.
   - transactional emails (lottery sign-up, etc.)
   - emails when lottery is drawn
 - membership scanner
-- unit tests
 
 ### Fixes
 
 - make fully mobile-ready
-
-### Legal
-
-- privacy policy, with dpo@theborderland.se
 
 ## Dreams platform
 
