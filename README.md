@@ -12,10 +12,11 @@ Hosting a burn for everybody.
 ### Features
 
 - store low-income questionnaire results in server
-- separate button to leave the lottery
 - only people with a lottery ticket should be able to use the open sale at first (two stages: open-sale-only-lottery-enterers, open-sale-general)
 - adding children
 - email notifications (via existing Mailgun)
+  - transactional emails (lottery sign-up, etc.)
+  - emails when lottery is drawn
 - membership scanner
 - Alversjö membership
 
@@ -24,6 +25,10 @@ Hosting a burn for everybody.
 - make fully mobile-ready
 - fix that number of memberships in open sale is not loaded immediately
 - people shouldn't need to reload the page
+
+### Legal
+
+- privacy policy, with dpo@theborderland.se
 
 ## Dreams platform
 
