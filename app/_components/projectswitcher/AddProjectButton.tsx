@@ -29,7 +29,7 @@ export default function AddProjectButton() {
         <ModalContent className="p-8">
           <ModalHeader>
             Do you want to host a burn-like event through this platform, either
-            on borderland.pro or self-hosted?
+            on this server or self-hosted?
           </ModalHeader>
           <ModalBody>
             <p>
