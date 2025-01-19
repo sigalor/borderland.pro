@@ -25,6 +25,8 @@ export default function MemberDetailsInput({
   const [lastName, setLastName] = useState(value?.last_name ?? "");
   const [birthdate, setBirthdate] = useState(value?.birthdate ?? "");
   const [isLowIncome, setIsLowIncome] = useState(value?.is_low_income ?? false);
+  const [lowIncomeQuestionnaireResult, setLowIncomeQuestionnaireResult] =
+    useState(value?.metadata?.low_income_questionnaire_result ?? undefined);
   const lowIncomeQuestionnaire = useLowIncomeQuestionnairePrompt();
 
   const isBirthdateWellFormatted = /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(
@@ -44,6 +46,9 @@ export default function MemberDetailsInput({
       last_name: lastName,
       birthdate: birthdate,
       is_low_income: isLowIncome,
+      metadata: {
+        low_income_questionnaire_result: lowIncomeQuestionnaireResult,
+      },
     };
 
     if (!withLowIncome) {
@@ -51,7 +56,13 @@ export default function MemberDetailsInput({
     }
 
     setValue(obj);
-  }, [firstName, lastName, birthdate, isLowIncome]);
+  }, [
+    firstName,
+    lastName,
+    birthdate,
+    isLowIncome,
+    lowIncomeQuestionnaireResult,
+  ]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -78,9 +89,10 @@ export default function MemberDetailsInput({
           onValueChange={async (newIsLowIncome) => {
             if (newIsLowIncome) {
               if (withLowIncomePrompt) {
-                const isEligible = await lowIncomeQuestionnaire();
-                if (isEligible) {
+                const liq = await lowIncomeQuestionnaire();
+                if (liq.isEligible) {
                   setIsLowIncome(true);
+                  setLowIncomeQuestionnaireResult(liq.result);
                 }
               } else {
                 setIsLowIncome(true);

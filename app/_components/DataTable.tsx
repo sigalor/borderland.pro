@@ -63,7 +63,7 @@ export default function DataTable({
     }
   }, [endpoint]);
 
-  const rowActionsFull: ActionButtonDef<DataItem>[] = rowActions ?? [];
+  const rowActionsFull: ActionButtonDef<DataItem>[] = [...(rowActions ?? [])];
   if (rowActionsCrud?.delete) {
     rowActionsFull.push({
       key: "delete",

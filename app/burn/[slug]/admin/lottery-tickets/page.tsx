@@ -7,9 +7,12 @@ import { BurnStage } from "@/utils/types";
 import { apiPost } from "@/app/_components/api";
 import toast from "react-hot-toast";
 import { BurnLotteryTicket } from "@/utils/types";
+import { EyeOutlined } from "@ant-design/icons";
+import { usePrompt } from "@/app/_components/PromptContext";
 
 export default function LotteryTicketsPage() {
   const { project, updateBurnConfig, reloadProfile } = useProject();
+  const prompt = usePrompt();
 
   const stage = project?.burn_config.current_stage;
   const hasWinners = (data?: FullData) =>
@@ -68,6 +71,27 @@ export default function LotteryTicketsPage() {
             await reloadProfile();
             toast.success(`${numDrawn} winners were drawn!`);
             return true;
+          },
+        },
+      ]}
+      rowActions={[
+        {
+          key: "view-metadata",
+          icon: <EyeOutlined />,
+          tooltip: "View metadata",
+          condition: (row) =>
+            row?.metadata && Object.keys(row.metadata).length > 0,
+          onClick: async (row) => {
+            await prompt(
+              <div className="flex flex-col gap-2">
+                <span>Metadata for {row?.profiles.email}</span>
+                <pre className="text-sm font-normal">
+                  {JSON.stringify(row?.metadata, null, 2)}
+                </pre>
+              </div>,
+              undefined,
+              "Close"
+            );
           },
         },
       ]}

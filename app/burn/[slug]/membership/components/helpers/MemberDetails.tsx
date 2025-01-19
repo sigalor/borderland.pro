@@ -3,12 +3,16 @@
 import React from "react";
 import { Input } from "@nextui-org/react";
 import { LockOutlined } from "@ant-design/icons";
+import { LowIncomeQuestionnaireResult } from "./useLowIncomeQuestionnaire";
 
 export type MemberDetailsData = {
   first_name: string;
   last_name: string;
   birthdate: string;
   is_low_income?: boolean;
+  metadata?: {
+    low_income_questionnaire_result?: LowIncomeQuestionnaireResult;
+  };
 };
 
 export default function MemberDetails({ data }: { data: MemberDetailsData }) {

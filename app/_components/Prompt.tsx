@@ -32,8 +32,9 @@ export type PromptResult = {
 
 export type PromptConfig = {
   id: string;
-  message?: string;
+  message?: string | React.ReactNode;
   fields?: PromptField[];
+  submitButtonText?: string;
   resolve: (value: PromptResult | undefined) => void;
 };
 
@@ -116,7 +117,11 @@ export default function Prompt({ config }: { config: PromptConfig }) {
               setIsOpen(false);
             }}
           >
-            {config.fields?.every((f) => f.readOnly) ? "Close" : "Submit"}
+            {config.submitButtonText
+              ? config.submitButtonText
+              : config.fields?.every((f) => f.readOnly)
+                ? "Close"
+                : "Submit"}
           </Button>
         </ModalBody>
       </ModalContent>

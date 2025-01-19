@@ -71,6 +71,7 @@ create table burn_lottery_tickets (
   is_low_income boolean default false,
   is_winner boolean default false,
   can_invite_plus_one boolean default false,
+  metadata jsonb,
   unique (project_id, first_name, last_name, birthdate),
   check (birthdate ~ '^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
 );

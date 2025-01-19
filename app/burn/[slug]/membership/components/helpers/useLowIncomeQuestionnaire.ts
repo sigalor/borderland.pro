@@ -5,7 +5,13 @@ export type LowIncomeQuestionnaireResult = {
   monthly_income: string;
 };
 
-export function useLowIncomeQuestionnairePrompt(): () => Promise<boolean> {
+export function useLowIncomeQuestionnairePrompt(): () => Promise<
+  | { isEligible: false }
+  | {
+      isEligible: true;
+      result: LowIncomeQuestionnaireResult;
+    }
+> {
   const prompt = usePrompt();
 
   return async () => {
@@ -22,13 +28,13 @@ export function useLowIncomeQuestionnairePrompt(): () => Promise<boolean> {
     )) as LowIncomeQuestionnaireResult | undefined;
 
     if (!result) {
-      return false;
+      return { isEligible: false };
     }
 
     // TODO: add actual logic here
-    const isLowIncome = parseInt(result.monthly_income) < 20000;
+    const isEligible = parseInt(result.monthly_income) < 20000;
 
-    if (isLowIncome) {
+    if (isEligible) {
       toast.success(
         "Congratulations! You are eligible for low income membership."
       );
@@ -38,6 +44,6 @@ export function useLowIncomeQuestionnairePrompt(): () => Promise<boolean> {
       );
     }
 
-    return isLowIncome;
+    return { isEligible, result };
   };
 }
