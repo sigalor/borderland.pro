@@ -18,11 +18,11 @@ export default function Home() {
     <div className="flex flex-col items-center justify-center min-h-screen">
       <Image
         src="/borderland.png"
-        alt="borderland.pro"
+        alt="The Borderland"
         width={100}
         height={100}
       />
-      <h1 className="text-4xl font-bold mt-4">borderland.pro</h1>
+      <h1 className="text-4xl font-bold mt-4">The Borderland</h1>
       <h2 className="text-2xl mt-2 mb-4">Membership platform</h2>
       <Button color="primary" onPress={() => setIsOpen(true)}>
         Click to login
