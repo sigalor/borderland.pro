@@ -6,6 +6,7 @@ import { useProject } from "@/app/_components/SessionContext";
 import MemberDetailsInput from "./helpers/MemberDetailsInput";
 import { MemberDetailsData } from "./helpers/MemberDetails";
 import ActionButton from "@/app/_components/ActionButton";
+import toast from "react-hot-toast";
 
 export default function LotteryOpenNotEntered() {
   const { project, updateProjectSimple } = useProject();
@@ -41,6 +42,7 @@ export default function LotteryOpenNotEntered() {
               updateProjectSimple({
                 lottery_ticket: ticket,
               });
+              toast.success("You have successfully entered the lottery!");
             },
           }}
         />

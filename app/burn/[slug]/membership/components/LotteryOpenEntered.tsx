@@ -14,24 +14,29 @@ export default function LotteryOpenEntered() {
   return (
     <div className="flex flex-col gap-4">
       <MemberDetails data={project?.lottery_ticket!} />
-      <Button
-        color="success"
-        isLoading={isLoading}
-        onPress={async () => {
-          setIsLoading(true);
-          try {
-            await apiDelete(`/burn/${project?.slug}/lottery-ticket`);
-            updateProjectSimple({
-              lottery_ticket: undefined,
-            });
-            toast.success("You have left the lottery!");
-          } finally {
-            setIsLoading(false);
-          }
-        }}
-      >
-        You have successfully entered the lottery!
-      </Button>
+      <div className="flex flex-col gap-2">
+        <Button color="success" isDisabled>
+          You have successfully entered the lottery!
+        </Button>
+        <Button
+          color="danger"
+          isLoading={isLoading}
+          onPress={async () => {
+            setIsLoading(true);
+            try {
+              await apiDelete(`/burn/${project?.slug}/lottery-ticket`);
+              updateProjectSimple({
+                lottery_ticket: undefined,
+              });
+              toast.success("You have left the lottery!");
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+        >
+          Click here if you want to leave the lottery
+        </Button>
+      </div>
     </div>
   );
 }
