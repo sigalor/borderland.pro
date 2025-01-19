@@ -4,19 +4,36 @@ Hosting a burn for everybody.
 
 ## TODO
 
+### Questionnaires
+
 - low-income questionnaire
 - burner questionnaire
-- fix that number of memberships in open sale is not loaded immediately
+
+### Features
+
 - store low-income questionnaire results in server
 - separate button to leave the lottery
-- people shouldn't need to reload the page
 - more levels of admin
 - only people with a lottery ticket should be able to use the open sale at first (two stages: open-sale-only-lottery-enterers, open-sale-general)
-- also allow transferring a membership to people who aren't registered in the platform
 - adding children
 - email notifications (via existing Mailgun)
 - membership scanner
 - Alversjö membership
+
+### Fixes
+
+- make fully mobile-ready
+- fix that number of memberships in open sale is not loaded immediately
+- people shouldn't need to reload the page
+
+## Dreams platform
+
+## Development
+
+```
+npm run supabase:start
+npm run dev
+```
 
 ## Co-creation
 
