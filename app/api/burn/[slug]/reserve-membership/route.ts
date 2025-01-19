@@ -1,5 +1,5 @@
 import { requestWithProject, query } from "@/app/api/_common/endpoints";
-import { BurnRole } from "@/utils/types";
+import { BurnRole, BurnStage } from "@/utils/types";
 import { getAvailableMemberships } from "@/app/api/_common/profile";
 
 export const POST = requestWithProject(
@@ -11,6 +11,16 @@ export const POST = requestWithProject(
 
     if (availableMemberships === 0) {
       throw new Error("No memberships available");
+    }
+
+    if (
+      project?.burn_config.current_stage ===
+        BurnStage.OpenSaleLotteryEntrantsOnly &&
+      !project?.lottery_ticket
+    ) {
+      throw new Error(
+        `As you don't have a lottery ticket, you must wait until the burn stage is ${BurnStage.OpenSaleGeneral}`
+      );
     }
 
     await supabase.from("burn_membership_purchase_rights").insert({

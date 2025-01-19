@@ -33,7 +33,7 @@ create table role_assignments (
   unique (user_id, role_id)
 );
 
-create type burn_stage as enum ('lottery-open', 'lottery-closed', 'open-sale');
+create type burn_stage as enum ('lottery-open', 'lottery-closed', 'open-sale-lottery-entrants-only', 'open-sale-general');
 
 create type burn_membership_pricing_type as enum ('tiered-3');
 
@@ -42,7 +42,8 @@ create table burn_config (
   created_at timestamp with time zone default now(),
   project_id uuid references projects not null,
   current_stage burn_stage not null,
-  open_sale_starting_at timestamp with time zone, -- this determines the 'reserved_until' field for memberships obtained in the lottery
+  open_sale_lottery_entrants_only_starting_at timestamp with time zone, -- this determines the 'reserved_until' field for memberships obtained in the lottery
+  open_sale_general_starting_at timestamp with time zone,
   open_sale_reservation_duration bigint, -- in seconds, determines how long the user has time to answer the questions and enter payment details
   transfer_reservation_duration bigint, -- in seconds, determines how long the user has time to purchase a membership after a transfer is made
   last_possible_transfer_at timestamp with time zone,

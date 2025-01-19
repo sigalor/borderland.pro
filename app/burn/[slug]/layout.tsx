@@ -39,7 +39,10 @@ export default function ProjectLayout({
             label:
               project.membership || project.membership_purchase_right
                 ? "Your membership"
-                : project.burn_config.current_stage === BurnStage.OpenSale
+                : project.burn_config.current_stage ===
+                      BurnStage.OpenSaleLotteryEntrantsOnly ||
+                    project.burn_config.current_stage ===
+                      BurnStage.OpenSaleGeneral
                   ? "Open membership sale"
                   : "Membership lottery",
             path: `/burn/${project?.slug}/membership`,
@@ -62,7 +65,9 @@ export default function ProjectLayout({
             ? ([
                 { separator: true },
                 { sectionTitle: "Membership management" },
-                project.burn_config.current_stage !== BurnStage.OpenSale
+                project.burn_config.current_stage !==
+                  BurnStage.OpenSaleLotteryEntrantsOnly &&
+                project.burn_config.current_stage !== BurnStage.OpenSaleGeneral
                   ? {
                       label: "Lottery tickets",
                       path: `/burn/${project?.slug}/admin/lottery-tickets`,

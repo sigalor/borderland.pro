@@ -15,9 +15,9 @@ export const POST = requestWithProject<
   s.infer<typeof TransferMembershipRequestSchema>
 >(
   async (supabase, profile, request, body, project) => {
-    if (project?.burn_config.current_stage !== BurnStage.OpenSale) {
+    if (project?.burn_config.current_stage !== BurnStage.OpenSaleGeneral) {
       throw new Error(
-        `Expected burn stage to be open-sale, got ${project?.burn_config.current_stage}`
+        `Expected burn stage to be ${BurnStage.OpenSaleGeneral}, got ${project?.burn_config.current_stage}`
       );
     }
 

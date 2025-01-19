@@ -1,7 +1,8 @@
 export enum BurnStage {
   LotteryOpen = "lottery-open",
   LotteryClosed = "lottery-closed",
-  OpenSale = "open-sale",
+  OpenSaleLotteryEntrantsOnly = "open-sale-lottery-entrants-only",
+  OpenSaleGeneral = "open-sale-general",
 }
 
 export enum BurnRole {
@@ -18,7 +19,8 @@ export enum BurnMembershipPricing {
 export type BurnConfig = {
   id: string;
   current_stage: BurnStage;
-  open_sale_starting_at: string;
+  open_sale_lottery_entrants_only_starting_at: string;
+  open_sale_general_starting_at: string;
   open_sale_reservation_duration: number;
   transfer_reservation_duration: number;
   last_possible_transfer_at: string;

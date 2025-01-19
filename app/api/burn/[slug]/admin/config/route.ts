@@ -4,7 +4,8 @@ import { BurnRole } from "@/utils/types";
 
 const UpdateBurnConfigRequestSchema = s.object({
   current_stage: s.string(),
-  open_sale_starting_at: s.string(),
+  open_sale_lottery_entrants_only_starting_at: s.string(),
+  open_sale_general_starting_at: s.string(),
   open_sale_reservation_duration: s.number(),
   transfer_reservation_duration: s.number(),
   last_possible_transfer_at: s.string(),

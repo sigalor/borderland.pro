@@ -31,7 +31,9 @@ export const POST = requestWithProject<
       supabase.from("burn_membership_purchase_rights").insert({
         project_id: project!.id,
         owner_id: recipientProfile.id,
-        expires_at: recipientProject.burn_config.open_sale_starting_at,
+        expires_at:
+          recipientProject.burn_config
+            .open_sale_lottery_entrants_only_starting_at,
         is_low_income: false,
         details_modifiable: true,
       })

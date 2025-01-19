@@ -16,7 +16,7 @@ const timelineEvents = [
   },
   {
     date: "TBD",
-    title: "Open sale opens for lottery entrants",
+    title: "Open sale opens for those who entered the lottery but didn't win",
   },
   {
     date: "TBD",

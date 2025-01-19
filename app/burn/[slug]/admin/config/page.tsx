@@ -13,8 +13,14 @@ export default function ConfigPage() {
   const [currentStage, setCurrentStage] = useState(
     project!.burn_config.current_stage
   );
-  const [openSaleStartingAt, setOpenSaleStartingAt] = useState(
-    project!.burn_config.open_sale_starting_at ?? ""
+  const [
+    openSaleLotteryEntrantsOnlyStartingAt,
+    setOpenSaleLotteryEntrantsOnlyStartingAt,
+  ] = useState(
+    project!.burn_config.open_sale_lottery_entrants_only_starting_at ?? ""
+  );
+  const [openSaleGeneralStartingAt, setOpenSaleGeneralStartingAt] = useState(
+    project!.burn_config.open_sale_general_starting_at ?? ""
   );
   const [openSaleReservationDuration, setOpenSaleReservationDuration] =
     useState(
@@ -61,8 +67,9 @@ export default function ConfigPage() {
   const isISODate = (date: string | null) => date && !isNaN(Date.parse(date));
   const isNumber = (value: string) => !isNaN(parseInt(value));
   const isAllValid =
-    ["lottery-open", "lottery-closed", "open-sale"].includes(currentStage) &&
-    isISODate(openSaleStartingAt) &&
+    Object.values(BurnStage).includes(currentStage) &&
+    isISODate(openSaleLotteryEntrantsOnlyStartingAt) &&
+    isISODate(openSaleGeneralStartingAt) &&
     isNumber(openSaleReservationDuration) &&
     isNumber(transferReservationDuration) &&
     isNumber(maxMemberships) &&
@@ -82,7 +89,12 @@ export default function ConfigPage() {
     setIsLoading(true);
     const newConfig = {
       current_stage: currentStage,
-      open_sale_starting_at: new Date(openSaleStartingAt).toISOString(),
+      open_sale_lottery_entrants_only_starting_at: new Date(
+        openSaleLotteryEntrantsOnlyStartingAt
+      ).toISOString(),
+      open_sale_general_starting_at: new Date(
+        openSaleGeneralStartingAt
+      ).toISOString(),
       open_sale_reservation_duration: parseInt(openSaleReservationDuration),
       transfer_reservation_duration: parseInt(transferReservationDuration),
       last_possible_transfer_at: new Date(lastPossibleTransferAt).toISOString(),
@@ -115,9 +127,14 @@ export default function ConfigPage() {
           onValueChange={(x) => setCurrentStage(x as BurnStage)}
         />
         <Input
-          label="open_sale_starting_at"
-          value={openSaleStartingAt}
-          onValueChange={setOpenSaleStartingAt}
+          label="open_sale_lottery_entrants_only_starting_at"
+          value={openSaleLotteryEntrantsOnlyStartingAt}
+          onValueChange={setOpenSaleLotteryEntrantsOnlyStartingAt}
+        />
+        <Input
+          label="open_sale_general_starting_at"
+          value={openSaleGeneralStartingAt}
+          onValueChange={setOpenSaleGeneralStartingAt}
         />
         <Input
           label="open_sale_reservation_duration"

@@ -9,9 +9,12 @@ export default function LotteryClosedNotEntered() {
   return (
     <p>
       The lottery is closed and you did not enter it. You will still be able to
-      purchase a membership in the open sale, which will start on{" "}
+      purchase a membership in the open sale for the general public, which will
+      start on{" "}
       <b>
-        {new Date(project?.burn_config.open_sale_starting_at!).toLocaleString()}
+        {new Date(
+          project?.burn_config.open_sale_general_starting_at!
+        ).toLocaleString()}
       </b>
       .
     </p>

@@ -25,8 +25,11 @@ export const POST = requestWithAuthAdmin<
     supabase.from("burn_config").insert({
       project_id: project.id,
       current_stage: BurnStage.LotteryOpen,
-      open_sale_starting_at: new Date(
+      open_sale_lottery_entrants_only_starting_at: new Date(
         new Date().getTime() + 1000 * 60 * 60 * 24
+      ).toISOString(),
+      open_sale_general_starting_at: new Date(
+        new Date().getTime() + 1000 * 60 * 60 * 24 * 2
       ).toISOString(),
       open_sale_reservation_duration: 60 * 30, // 30 minutes
       transfer_reservation_duration: 60 * 60 * 24 * 7, // 7 days

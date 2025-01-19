@@ -80,12 +80,27 @@ export default function MembershipsPage() {
           },
         },
         {
-          key: "start-open-sale",
-          label: "Start open sale",
+          key: "start-open-sale-lottery-entrants-only",
+          label: "Start open sale for lottery entrants only",
           condition: () =>
             project?.burn_config.current_stage === BurnStage.LotteryClosed,
           onClick: async () => {
-            await apiPost(`/burn/${project?.slug}/admin/start-open-sale`);
+            await apiPost(
+              `/burn/${project?.slug}/admin/start-open-sale-lottery-entrants-only`
+            );
+            await reloadProfile();
+          },
+        },
+        {
+          key: "start-open-sale-general",
+          label: "Start open sale for the general public",
+          condition: () =>
+            project?.burn_config.current_stage ===
+            BurnStage.OpenSaleLotteryEntrantsOnly,
+          onClick: async () => {
+            await apiPost(
+              `/burn/${project?.slug}/admin/start-open-sale-general`
+            );
             await reloadProfile();
           },
         },
