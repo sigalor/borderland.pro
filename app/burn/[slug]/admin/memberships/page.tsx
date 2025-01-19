@@ -106,6 +106,7 @@ export default function MembershipsPage() {
         },
       ]}
       rowActionsCrud={{
+        viewMetadata: true,
         delete: true,
       }}
     />

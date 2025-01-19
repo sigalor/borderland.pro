@@ -69,7 +69,9 @@ export default function MembershipAvailable() {
       {
         tier,
         originUrl: window.location.href,
-        metadata: burnerQuestionnaireResult,
+        metadata: {
+          burner_questionnaire_result: burnerQuestionnaireResult,
+        },
       }
     );
     window.location.href = url;

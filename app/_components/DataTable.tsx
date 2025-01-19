@@ -6,8 +6,9 @@ import { apiGet } from "@/app/_components/api";
 import BasicTable from "@/app/_components/BasicTable";
 import Heading from "@/app/_components/Heading";
 import ActionButton, { ActionButtonDef } from "./ActionButton";
-import { DeleteOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { apiDelete } from "@/app/_components/api";
+import { usePrompt } from "@/app/_components/PromptContext";
 
 export type DataItem = {
   id: string;
@@ -30,6 +31,7 @@ interface DataTableProps {
   globalActions?: ActionButtonDef<FullData>[];
   rowActions?: ActionButtonDef<DataItem>[];
   rowActionsCrud?: {
+    viewMetadata?: boolean;
     delete?: boolean;
   };
 }
@@ -45,6 +47,7 @@ export default function DataTable({
   const initialLoadDone = useRef(false);
   const [fullData, setFullData] = useState<FullData | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const prompt = usePrompt();
 
   const loadData = async () => {
     setLoading(true);
@@ -64,6 +67,26 @@ export default function DataTable({
   }, [endpoint]);
 
   const rowActionsFull: ActionButtonDef<DataItem>[] = [...(rowActions ?? [])];
+  if (rowActionsCrud?.viewMetadata) {
+    rowActionsFull.push({
+      key: "view-metadata",
+      icon: <EyeOutlined />,
+      tooltip: "View metadata",
+      condition: (row) => row?.metadata && Object.keys(row.metadata).length > 0,
+      onClick: async (row) => {
+        await prompt(
+          <div className="flex flex-col gap-2">
+            <span>Metadata for {row?.profiles.email}</span>
+            <pre className="text-sm font-normal">
+              {JSON.stringify(row?.metadata, null, 2)}
+            </pre>
+          </div>,
+          undefined,
+          "Close"
+        );
+      },
+    });
+  }
   if (rowActionsCrud?.delete) {
     rowActionsFull.push({
       key: "delete",
