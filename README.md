@@ -17,12 +17,13 @@ Hosting a burn for everybody.
 - link list (both on theborderland.se and in another section besides the timeline overview)
 - membership scanner
 - adjust privacy policy according to low-income and burner questionnaire
+- get approval for Alversjö membership integration from Caroline
 - make fully mobile-ready
 - load testing
 - deployment on Vercel (members.theborderland.se) and own BL Supabase instance
 - host what was previously on borderland.pro on theborderland.se
   - set up Cloudflare redirect from borderland.pro to theborderland.se
-- set up dry run with Wanda and other interested testers
+- set up dry run with Wanda and other interested testers (if you want to be a tester, let me know!)
 
 ## Setup instructions
 
