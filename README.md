@@ -2,6 +2,8 @@
 
 Hosting a burn for everybody.
 
+Initially for [The Borderland](https://theborderland.se), but designed to be as general, configurable and parameterizable as possible.
+
 ## TODO
 
 - add all questions for burner questionnaire (to be provided by Wanda)
@@ -28,12 +30,12 @@ Hosting a burn for everybody.
 ## Long-term goals
 
 - consolidating existing tools
-  - add a single place for all shift signups
-  - add a unified view for all rideshares
   - add the entire dreams system (including receipt submission), i.e. everything what Cobudget and Open Collective currently do
+  - add a single interface for all shift signups (clowns, sanctuary, threshold, toilets, etc.)
+  - add a single interface for rideshares
   - integrate the map and the JOMO guide, i.e. everything what the [Dust app](https://dust.events/) currently does
   - integrate everything Talk currently does
-  - add LLM-based AP writing assistance (based on the AP "How to run an AP", to be published by Rosa soon)
+  - add LLM-based AP writing assistance (based on the AP "How to run an AP", which will be published by Rosa soon)
   - add all the functionality for [BurnerBox](https://burnerbox.glide.page/dl/search)
 - technical
   - set up as a Progressive Web App (PWA) to allow seamless use on mobile
