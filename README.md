@@ -25,6 +25,20 @@ Hosting a burn for everybody.
   - set up Cloudflare redirect from borderland.pro to theborderland.se
 - set up dry run with Wanda and other interested testers (if you want to be a tester, let me know!)
 
+## Long-term goals
+
+- consolidating existing tools
+  - add a single place for all shift signups
+  - add a unified view for all rideshares
+  - add the entire dreams system (including receipt submission), i.e. everything what Cobudget and Open Collective currently do
+  - integrate the map and the JOMO guide, i.e. everything what the [Dust app](https://dust.events/) currently does
+  - integrate everything Talk currently does
+  - add LLM-based AP writing assistance (based on the AP "How to run an AP", to be published by Rosa soon)
+  - add all the functionality for [BurnerBox](https://burnerbox.glide.page/dl/search)
+- technical
+  - set up as a Progressive Web App (PWA) to allow seamless use on mobile
+  - allow "one-click deployment" onto own server, e.g. using [Fly](https://fly.io/)
+
 ## Setup instructions
 
 1. Make sure that you have recent versions of Node.js and Docker installed
