@@ -24,6 +24,12 @@ export function useLowIncomeQuestionnairePrompt(): () => Promise<
           label: "What is your monthly income in SEK?",
           validate: (value) => !isNaN(parseInt(value)),
         },
+        {
+          key: "assets",
+          label:
+            "What is the total value of your assets in SEK (e.g. savings, investments, property, etc.)?",
+          validate: (value) => !isNaN(parseInt(value)),
+        },
       ]
     )) as LowIncomeQuestionnaireResult | undefined;
 
@@ -31,8 +37,8 @@ export function useLowIncomeQuestionnairePrompt(): () => Promise<
       return { isEligible: false };
     }
 
-    // TODO: add actual logic here
-    const isEligible = parseInt(result.monthly_income) < 20000;
+    // decision made with Wanda (2025-01-20): no check in the frontend, the results are just stored for reference
+    /*const isEligible = parseInt(result.monthly_income) < 20000;
 
     if (isEligible) {
       toast.success(
@@ -42,8 +48,8 @@ export function useLowIncomeQuestionnairePrompt(): () => Promise<
       toast.error(
         "Unfortunately you are not eligible for low income membership."
       );
-    }
+    }*/
 
-    return { isEligible, result };
+    return { isEligible: true, result };
   };
 }
