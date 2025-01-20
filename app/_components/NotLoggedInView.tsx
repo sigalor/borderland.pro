@@ -16,34 +16,57 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen">
-      <Image
-        src="/borderland.png"
-        alt="The Borderland"
-        width={100}
-        height={100}
-      />
-      <h1 className="text-4xl font-bold mt-4">The Borderland</h1>
-      <h2 className="text-2xl mt-2 mb-4">Membership platform</h2>
-      <Button color="primary" onPress={() => setIsOpen(true)}>
-        Click to login
-      </Button>
-      <Modal
-        isOpen={isOpen}
-        onOpenChange={setIsOpen}
-        classNames={{
-          base: "m-0",
-          wrapper: "items-center",
-        }}
+    <div
+      className="absolute inset-0 z-0"
+      style={{
+        backgroundImage: 'url("/Secret-Garden-Bridge.webp")',
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
+      <div
+        className="flex flex-col items-center justify-center min-h-screen z-1"
+        style={{ backdropFilter: "blur(10px)" }}
       >
-        <ModalContent className="m-4">
-          <ModalBody>
-            <Auth />
-          </ModalBody>
-        </ModalContent>
-      </Modal>
-      <div className="absolute bottom-0 right-0 p-4 text-xs">
-        <Link href="/privacy">Privacy policy</Link>
+        <Image
+          src="/borderland.png"
+          alt="The Borderland"
+          width={100}
+          height={100}
+        />
+        <h1
+          className="text-4xl font-bold mt-4 text-white"
+          style={{ filter: "drop-shadow(0 0 10px black)" }}
+        >
+          The Borderland
+        </h1>
+        <h2
+          className="mt-2 mb-4 text-white"
+          style={{ filter: "drop-shadow(0 0 10px black)" }}
+        >
+          Membership platform
+        </h2>
+        <Button color="primary" onPress={() => setIsOpen(true)}>
+          Click to login
+        </Button>
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={setIsOpen}
+          classNames={{
+            base: "m-0",
+            wrapper: "items-center",
+          }}
+        >
+          <ModalContent className="m-4">
+            <ModalBody>
+              <Auth />
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+        <div className="absolute bottom-0 right-0 p-4 text-xs">
+          <Link href="/privacy">Privacy policy</Link>
+        </div>
       </div>
     </div>
   );
