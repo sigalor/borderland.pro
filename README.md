@@ -32,6 +32,7 @@ Initially for [The Borderland](https://theborderland.se), but designed to be as 
 - consolidating existing tools
   - add the entire dreams system (including receipt submission), i.e. everything what Cobudget and Open Collective currently do
   - add a single interface for all shift signups (clowns, sanctuary, threshold, toilets, etc.)
+    - issue so far: realities leads didn't have proper contact details from everyone!
   - add a single interface for rideshares
   - integrate the map and the JOMO guide, i.e. everything what the [Dust app](https://dust.events/) currently does
   - integrate everything Talk currently does
@@ -40,6 +41,7 @@ Initially for [The Borderland](https://theborderland.se), but designed to be as 
 - technical
   - set up as a Progressive Web App (PWA) to allow seamless use on mobile
   - allow "one-click deployment" onto own server, e.g. using [Fly](https://fly.io/)
+  - i18n
 
 ## Setup instructions
 
