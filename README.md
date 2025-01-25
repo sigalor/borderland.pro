@@ -8,7 +8,8 @@ Initially for [The Borderland](https://theborderland.se), but designed to be as 
 
 - add all questions for burner questionnaire (to be provided by Wanda)
 - allow adding children (just as membership metadata, i.e. not a "real" membership, children don't need QR codes)
-- allow changing name and birthday (admin can change always, participants only before transfer deadline)
+- allow changing name and birthday (only admins can change)
+  - users can *apply* for a change of name and/or birthday, auto-accept with small Levenshtein distance
 - allow search for memberships (both email and name)
 - when transfers are closed, also say that instead of hiding the section
 - when refunding a membership, deduct Stripe fees
