@@ -66,7 +66,7 @@ export default function MembershipAvailable() {
 
   const purchaseMembership = async (
     tier: number,
-    burnerQuestionnaireResult?: BurnerQuestionnaireResult
+    burnerQuestionnaireResult?: any
   ) => {
     const { url } = await apiPost(
       `/burn/${project?.slug}/purchase-membership`,
