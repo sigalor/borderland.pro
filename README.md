@@ -68,7 +68,7 @@ Initially for [The Borderland](https://theborderland.se), but designed to be as 
 1. Click on "Submit"
 1. Click on "The Borderland 2025" in the left bar to reach http://localhost:3000/burn/the-borderland-2025
 1. Click on "Configuration" and scroll to the bottom to reach http://localhost:3000/burn/the-borderland-2025/admin/config
-1. Go to https://dashboard.stripe.com/test/apikeys, copy out the secret key (starting with `sk_test_`) and copy it into the `stripe_secret_api_key` field of the burn config
+1. Go to https://dashboard.stripe.com/test/apikeys, copy out the secret key (starting with `sk_test_`) and copy it into the `stripe_secret_api_key` field of the burn config. You will need a stripe account in advance for this. 
 1. Make sure you have the stripe command line tools installed. If you do not have these installed (you can test by typing in stripe in your command line) find instructions here: https://docs.stripe.com/stripe-cli
 1. Run `npm run stripe:listen` in a separate console. Follow the instructions on activating the keys. Once done run the command again, copy out the webhook signing secret (starting with `whsec_`) and copy it into the `stripe_webhook_secret` of the burn config
 1. Click on "Save configuration"

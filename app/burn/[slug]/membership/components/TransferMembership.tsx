@@ -9,15 +9,23 @@ import { apiPost } from "@/app/_components/api";
 import toast from "react-hot-toast";
 import { isEmail } from "@/app/_components/utils";
 import { formatMoney } from "@/app/_components/utils";
+import { usePrompt } from "@/app/_components/PromptContext";
 
 export default function TransferMembership() {
   const { project, reloadProfile } = useProject();
   const [email, setEmail] = useState("");
-
+  const [confirmTransfer, setTransfer] = useState("");
+  const prompt = usePrompt();
+  
   if (
     +new Date() > +new Date(project?.burn_config.last_possible_transfer_at!)
   ) {
-    return null;
+     return (<>
+        
+        <Heading className="mt-12">Transfer your membership</Heading>
+        <p>The transfer window is now closed and you can no longer transfer your membership.</p>
+        
+        </>)
   }
 
   return (
@@ -62,19 +70,37 @@ export default function TransferMembership() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
         />
+         <Input
+          label="Type in exactly: I WANT TO TRANSFER"
+          value={confirmTransfer}
+          onChange={(e) => setTransfer(e.target.value)}
+        />
+        
         <ActionButton
           color="primary"
-          isDisabled={!isEmail(email)}
+          isDisabled={!isEmail(email) && confirmTransfer!="I WANT TO TRANSFER"}
           action={{
             key: "transfer-membership",
             label: "Transfer",
-            onClick: async () => {
-              await apiPost(`/burn/${project?.slug}/transfer-membership`, {
-                email,
-              });
-              await reloadProfile();
-              toast.success("Membership successfully transferred!");
+            onClick: {
+              prompt: () =>
+                prompt("You are about to return your membership. This can not be undone! Are you absolutely sure?", [
+                  {
+                    key: "confirmReturn",
+                    label: "Type in one more time: I WANT TO TRANSFER",
+                    validate: (finalConfirm) => finalConfirm=="I WANT TO TRANSFER",
+                  }
+                ]),
+              handler: async (_, promptData) => {
+                await apiPost(`/burn/${project?.slug}/transfer-membership`, {
+                  email, confirmTransfer,
+                });
+                await reloadProfile();
+                toast.success("Membership successfully transfered!");
+                return true;
+              },
             },
+           
           }}
         />
       </div>
