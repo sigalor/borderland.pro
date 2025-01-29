@@ -7,6 +7,8 @@ import InvitePlusOne from "./InvitePlusOne";
 import { QRCodeSVG } from "qrcode.react";
 import { useSearchParams, useRouter } from "next/navigation";
 import TransferMembership from "./TransferMembership";
+import ReturnMembership from "./ReturnMembership";
+
 
 export default function Member() {
   const { project } = useProject();
@@ -34,7 +36,9 @@ export default function Member() {
       </div>
       <InvitePlusOne />
       <MemberDetailsWithHeading data={project?.membership!} />
+      
       <TransferMembership />
+      <ReturnMembership />
     </>
   );
 }

@@ -47,29 +47,31 @@ Initially for [The Borderland](https://theborderland.se), but designed to be as 
 ## Setup instructions
 
 1. Make sure that you have recent versions of Node.js and Docker installed
-2. Clone this repository
-3. Run `npm install`
-4. Run `npm run supabase:start`
-5. Run `npm run dev`
-6. Go to http://localhost:3000
-7. Click on "Click to login", enter any email address and click on "Send magic link"
-8. Go to http://localhost:54324/monitor and click on the first entry
-9. Copy the 6-digit code from that email into your login tab and submit it
-10. Go to http://localhost:54323/project/default/editor and click on "profiles" on the left
-11. Set "is_admin" to TRUE for your user
-12. Reload your tab with http://localhost:3000/
-13. Click on the gear icon titled "Administration" in the top left
-14. Click on "Projects" to reach http://localhost:3000/admin/projects
-15. Click on "Add project" and enter the following
+1. Clone this repositorys
+1. Run `npm install`
+1. Run `npm run supabase:start`
+1. Copy the contents from .env.template to .env and use the keys from the output of the previous command to populate the file. If you are running on somewhere else than localhost update the URLs as well. 
+1. Run `npm run dev`
+1. Go to http://localhost:3000
+1. Click on "Click to login", enter any email address and click on "Send magic link"
+1. Go to http://localhost:54324/monitor and click on the first entry
+1. Copy the 6-digit code from that email into your login tab and submit it
+1. Go to http://localhost:54323/project/default/editor and click on "profiles" on the left
+1. Set "is_admin" to TRUE for your user
+1. Reload your tab with http://localhost:3000/
+1. Click on the gear icon titled "Administration" in the top left
+1. Click on "Projects" to reach http://localhost:3000/admin/projects
+1. Click on "Add project" and enter the following
     - Name: `The Borderland 2025`
     - Type: `burn`
     - Slug: `the-borderland-2025` (determined automatically)
-16. Click on "Submit"
-17. Click on "The Borderland 2025" in the left bar to reach http://localhost:3000/burn/the-borderland-2025
-18. Click on "Configuration" and scroll to the bottom to reach http://localhost:3000/burn/the-borderland-2025/admin/config
-19. Go to https://dashboard.stripe.com/test/apikeys, copy out the secret key (starting with `sk_test_`) and copy it into the `stripe_secret_api_key` field of the burn config
-20. Run `npm run stripe:listen` in a separate console, copy out the webhook signing secret (starting with `whsec_`) and copy it into the `stripe_webhook_secret` of the burn config
-21. Click on "Save configuration"
+1. Click on "Submit"
+1. Click on "The Borderland 2025" in the left bar to reach http://localhost:3000/burn/the-borderland-2025
+1. Click on "Configuration" and scroll to the bottom to reach http://localhost:3000/burn/the-borderland-2025/admin/config
+1. Go to https://dashboard.stripe.com/test/apikeys, copy out the secret key (starting with `sk_test_`) and copy it into the `stripe_secret_api_key` field of the burn config. You will need a stripe account in advance for this. 
+1. Make sure you have the stripe command line tools installed. If you do not have these installed (you can test by typing in stripe in your command line) find instructions here: https://docs.stripe.com/stripe-cli
+1. Run `npm run stripe:listen` in a separate console. Follow the instructions on activating the keys. Once done run the command again, copy out the webhook signing secret (starting with `whsec_`) and copy it into the `stripe_webhook_secret` of the burn config
+1. Click on "Save configuration"
 
 ## Co-creation
 
